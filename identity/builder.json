@@ -2,7 +2,7 @@
   "schemaVersion": "1",
   "did": "did:key:z6Mks3GkYHmXSXjS639r9399owtxCMpzFexrq6EAziYZnjPk",
   "fingerprint": "62c0aca3721ba547",
-  "signerStatus": "SIGNER_AVAILABLE",
+  "signerStatus": "SIGNER_UNAVAILABLE",
   "github": {
     "profile": "https://github.com/retardio73-boop"
   },
