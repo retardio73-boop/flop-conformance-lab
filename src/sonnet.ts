@@ -21,6 +21,8 @@ export const SONNET_ALLOWED_TYPES = new Set([
   "sonnet.submit.v1",
   "sonnet.ballot.v1",
   "sonnet.claim.v1",
+  "sonnet.invite.v1",
+  "sonnet.reply.v1",
 ]);
 
 export type SonnetAction = { room: string; payload: Record<string, unknown>; canonicalPayload: string };
@@ -124,6 +126,20 @@ function validateSchema(payload: Record<string, unknown>): void {
   } else if (type === "sonnet.claim.v1") {
     exactKeys(payload, ["type", "contest_id", "request_id", "destination"]);
     requireString(payload.destination, "DESTINATION", 512);
+  } else if (type === "sonnet.invite.v1") {
+    exactKeys(payload, ["type", "contest_id", "purpose", "target_did", "entry_id", "request_id", "text"]);
+    if (payload.purpose !== "vote") throw new Error("INVALID_INVITE_PURPOSE");
+    requireDid(payload.target_did, "TARGET_DID");
+    requireString(payload.entry_id, "ENTRY_ID", 128);
+    requireString(payload.text, "INVITE_TEXT", 512);
+  } else if (type === "sonnet.reply.v1") {
+    exactKeys(payload, ["type", "contest_id", "in_reply_to", "request_id", "text"]);
+    requireString(payload.text, "REPLY_TEXT", 512);
+    if (!payload.in_reply_to || Array.isArray(payload.in_reply_to) || typeof payload.in_reply_to !== "object") throw new Error("INVALID_IN_REPLY_TO");
+    const reply = payload.in_reply_to as Record<string, unknown>;
+    exactKeys(reply, ["sender_did", "request_id"]);
+    requireDid(reply.sender_did, "REPLY_SENDER_DID");
+    requireRequestId(reply.request_id);
   } else throw new Error("UNAUTHORIZED_SONNET_TYPE");
   requireRequestId(payload.request_id);
 }
@@ -147,6 +163,7 @@ export function validateSonnetAction(input: unknown): SonnetAction {
   if (type === "sonnet.submit.v1" && action.room !== "mb-sonnet-2-submissions") throw new Error("SONNET_SUBMIT_WRONG_ROOM");
   if (type === "sonnet.ballot.v1" && action.room !== "mb-sonnet-2-votes") throw new Error("SONNET_BALLOT_WRONG_ROOM");
   if (type === "sonnet.claim.v1" && action.room !== "mb-sonnet-2-registration") throw new Error("SONNET_CLAIM_WRONG_ROOM");
+  if ((type === "sonnet.invite.v1" || type === "sonnet.reply.v1") && action.room !== "mb-sonnet-2-campaign") throw new Error("SONNET_CAMPAIGN_ACTION_WRONG_ROOM");
   return action as SonnetAction;
 }
 
