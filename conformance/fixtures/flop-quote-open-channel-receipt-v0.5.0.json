@@ -1,0 +1,121 @@
+{
+  "schemaVersion": "1",
+  "id": "FLOP_QUOTE_OPEN_CHANNEL_RECEIPT_V0_5_0_BOUNDARY",
+  "classification": "TARGET_SPEC_BOUNDARY",
+  "upstream": {
+    "repository": "flop-labs/yellowpaper",
+    "commit": "3eaf2f25bc46a501df225cae4e4e991975f6b2a9",
+    "version": "0.5.0-draft",
+    "issues": [26, 33],
+    "sections": [
+      "§4.1",
+      "§4.2",
+      "§12.1 R12.1a",
+      "Appendix F.3",
+      "Appendix G"
+    ],
+    "publicRuntime": "PUBLIC_RUNTIME_UNAVAILABLE"
+  },
+  "quoteBoundary": {
+    "normativeStatus": "OPEN_ISSUE",
+    "canonicalDiscoveryContract": null,
+    "expected": {
+      "status": "FAIL_CLOSED",
+      "reason": "NO_CANONICAL_QUOTE_DISCOVERY_CONTRACT"
+    },
+    "mustNotInfer": [
+      "aggregate_gn_is_currency",
+      "aggregate_gn_is_physical_flops",
+      "external_per_token_price_to_channel_escrow",
+      "numeric_ranking_across_unlike_quote_units"
+    ]
+  },
+  "openChannelTarget": {
+    "normativeStatus": "TARGET_SPEC",
+    "source": "Appendix G extrinsic table",
+    "fields": [
+      "miner",
+      "model_hash",
+      "measured_root",
+      "decode_policy_hash",
+      "precision",
+      "enclave_key",
+      "agent_key",
+      "sla",
+      "escrow",
+      "nonce",
+      "settlement_class"
+    ],
+    "quoteBridgeCritical": [
+      "model_hash",
+      "precision",
+      "escrow",
+      "settlement_class"
+    ],
+    "escrowUnitStatus": "UNRESOLVED_FOR_QUOTE_NORMALIZATION"
+  },
+  "receiptTarget": {
+    "normativeStatus": "TARGET_SPEC",
+    "source": "Appendix F.3",
+    "signatureScheme": "sr25519",
+    "domainAscii": "FLOP/COMPUTE_CHANNEL/RECEIPT",
+    "versionByte": 1,
+    "binds": [
+      "channel_id",
+      "final_root",
+      "aggregate_gn",
+      "payable"
+    ],
+    "encoding": {
+      "channel_id": "raw bytes",
+      "final_root": "raw bytes",
+      "aggregate_gn": "u128LE",
+      "payable": "u128LE"
+    },
+    "vector": {
+      "channelIdHex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "finalRootHex": "2222222222222222222222222222222222222222222222222222222222222222",
+      "aggregateGn": "42",
+      "payable": "1000",
+      "expectedMessageHex": "464c4f502f434f4d505554455f4348414e4e454c2f5245434549505401111111111111111111111111111111111111111111111111111111111111111122222222222222222222222222222222222222222222222222222222222222222a000000000000000000000000000000e8030000000000000000000000000000"
+    }
+  },
+  "cases": [
+    {
+      "id": "external-per-token-quote",
+      "inputClass": "NON_NORMATIVE_DISCOVERY_OBSERVATION",
+      "publishedUnit": "external-per-token",
+      "expected": {
+        "status": "FAIL_CLOSED",
+        "stage": "quote_to_open_channel",
+        "reason": "NO_CANONICAL_QUOTE_DISCOVERY_CONTRACT"
+      }
+    },
+    {
+      "id": "reserved-session-with-unresolved-pay-unit",
+      "inputClass": "NON_NORMATIVE_DISCOVERY_OBSERVATION",
+      "publishedUnit": "reserved-session",
+      "expected": {
+        "status": "FAIL_CLOSED",
+        "stage": "quote_to_open_channel",
+        "reason": "CHANNEL_PAY_UNIT_UNRESOLVED"
+      }
+    },
+    {
+      "id": "receipt-binding-after-authoritative-channel-input",
+      "inputClass": "TARGET_SPEC_STRUCTURAL_VECTOR",
+      "expected": {
+        "status": "PASS",
+        "stage": "open_channel_to_receipt",
+        "reason": "BYTE_EXACT_RECEIPT_BINDING"
+      }
+    }
+  ],
+  "scope": {
+    "networkMutation": false,
+    "liveSettlement": false,
+    "signatureGeneration": false,
+    "walletRequired": false,
+    "claimCanonicalQuoteSchemaExists": false
+  }
+}
