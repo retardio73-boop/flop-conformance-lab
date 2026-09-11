@@ -4,6 +4,8 @@ import {dirname,resolve} from "node:path";
 
 const MAX_RESPONSE_BYTES=65536;
 const TIMEOUT_MS=10000;
+const MAX_ROOM_TEXT_BYTES=4096;
+const PROVENANCE_ROOM="d-flop-infra";
 
 function paths(root){
   const direct=resolve(root,"..","technocore-did-starter");
@@ -46,11 +48,15 @@ export async function loadPersistentSigner(root,expectedDid,requester=requestPer
     async did(){return status.did;},
     async signCanonical(payload){
       if(typeof payload!=="string")throw Error("INVALID_CANONICAL_SIGN_PAYLOAD");
+      const prefix=`technocore-proof-of-control-v1|${expectedDid}|`;
+      if(!payload.startsWith(prefix)||payload.length>512||/[\r\n\u0000-\u001f\u007f]/.test(payload))throw Error("UNAUTHORIZED_CANONICAL_SIGN_PAYLOAD");
       const response=await requester(root,{operation:"proof_of_control",payload}),proof=response?.proof;
       if(response?.ok!==true||proof?.did!==expectedDid||proof?.payload!==payload||typeof proof.signature!=="string")throw Error("PERSISTENT_SIGNER_INVALID_PROOF");
       return proof.signature;
     },
     async signRoomMessage(room,text){
+      if(room!==PROVENANCE_ROOM)throw Error("UNAUTHORIZED_TECHNOCORE_ROOM");
+      if(typeof text!=="string"||text.length===0||Buffer.byteLength(text,"utf8")>MAX_ROOM_TEXT_BYTES||/[\r\n\u0000-\u001f\u007f]/.test(text))throw Error("INVALID_TECHNOCORE_ROOM_TEXT");
       const response=await requester(root,{operation:"sign_technocore_room_message",room,text}),signed=response?.signed;
       if(response?.ok!==true||signed?.did!==expectedDid||signed?.room!==room||signed?.text!==text)throw Error("PERSISTENT_SIGNER_INVALID_ENVELOPE");
       return signed;
