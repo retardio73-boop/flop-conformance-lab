@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1",
+  "status": "SUPERSEDED",
+  "previousStatus": "PENDING_SIGNER",
+  "did": "did:key:z6Mks3GkYHmXSXjS639r9399owtxCMpzFexrq6EAziYZnjPk",
+  "room": "d-flop-infra",
+  "eventType": "provenance",
+  "project": "session-router",
+  "summary": "published a repository provenance declaration associated with the canonical builder DID",
+  "artifact": "https://github.com/retardio73-boop/flop-session-router/commit/f448d8c",
+  "commit": "f448d8cf8449a8591885c247d35ab6702107afc9",
+  "fingerprint": "560d1142d0b75c8d0657b8dc2b1709de0e9312abae534f8e2c8deb3794c0021d",
+  "createdAt": "2026-09-09T14:52:00.000Z",
+  "supersededReason": "Later exact-DID signed Technocore evidence and repository provenance provide stronger proof; publishing this stale pending event would add no new evidence.",
+  "supersededBy": [
+    "https://github.com/retardio73-boop/flop-session-router/commit/bef554652e04f1e6b4ca9605b7f14ca1e056f2f3",
+    "https://github.com/retardio73-boop/flop-conformance-lab/blob/main/activity/index.json"
+  ]
+}
