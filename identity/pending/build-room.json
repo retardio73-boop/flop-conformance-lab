@@ -1,8 +1,10 @@
 {
   "schemaVersion": "1",
-  "status": "PENDING_SIGNER",
+  "status": "ACTIVITY_VERIFIED",
   "did": "did:key:z6Mks3GkYHmXSXjS639r9399owtxCMpzFexrq6EAziYZnjPk",
   "room": "d-flop-infra",
-  "lastObservedStatus": "EMPTY_OR_UNCLAIMED",
-  "note": "Ownership has not been claimed and no write is authorized until the exact DID signer is available."
+  "lastObservedStatus": "VERIFIED_ACTIVITY",
+  "ownershipStatus": "UNVERIFIED",
+  "signerStatus": "SIGNER_UNAVAILABLE",
+  "note": "Signed activity for this DID has been verified in d-flop-infra. Current room ownership remains unverified, and no new write is authorized while the exact-DID signer is unavailable."
 }
