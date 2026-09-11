@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "contest_id": "sonnet-2",
-  "verified_at": "2026-09-11T20:43:30.322Z",
+  "verified_at": "2026-09-11T20:49:24.203952Z",
   "normative_package": {
     "commit": "e1999094c359ef7390bdf07fe2a151393a5c2f51",
     "manifest_sha256": "0c87c41b8b33bdd8641f77c9e481a12f2758a0e27d47b90452b1c0a2020a9547",
@@ -37,7 +37,11 @@
     {"seq": 2347, "meaning": "soft-applied to nf2 using unofficial type"},
     {"seq": 2348, "meaning": "soft-applied to volta-2 using unofficial type"},
     {"seq": 2350, "meaning": "latest explicit HARD CLOSED statement; watcher bug acknowledged"},
-    {"seq": 2351, "meaning": "claimed no accepted roster consent anywhere"}
+    {"seq": 2351, "meaning": "claimed no accepted roster consent anywhere"},
+    {"seq": 2409, "meaning": "official valiant roster consent attempt by magic_rugs"},
+    {"seq": 2412, "meaning": "pinned referee rejected seq 2409 request: roster member unregistered"},
+    {"seq": 2428, "meaning": "second official valiant roster consent attempt by magic_rugs"},
+    {"seq": 2435, "meaning": "pinned referee rejected seq 2428 request: roster member unregistered"}
   ],
   "floprugs1": {
     "team_request_seq": 1949,
@@ -75,6 +79,13 @@
     "registration_receipt_seq": 2769,
     "x_account_url": "https://x.com/magic_rugs",
     "official_unfinished_roster_consent": null,
+    "latest_other_roster_attempt": {
+      "game_id": "valiant",
+      "request_ids": ["roster-valiant-us-1789159622", "roster-valiant-us-1789159692"],
+      "referee_receipt_seqs": [2412, 2435],
+      "status": "REJECTED",
+      "reason": "roster: unregistered"
+    },
     "availability_classification": "CLEAN",
     "reliability": "LOW_FOR_COORDINATION",
     "reliability_reason": "contradictory open/closed messages, repeated mass soft-applications, and an acknowledged stale auto-watcher"
