@@ -10,3 +10,6 @@ reports/*.json
 !reports/.gitkeep
 identity/runtime/
 *.dpapi
+sonnet/state/discovery*.json
+sonnet/state/invitations/
+sonnet/state/private/
