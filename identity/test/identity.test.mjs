@@ -48,6 +48,22 @@ test("persistent signer loads a real challenge signer and fails closed",async()=
   assert.equal((await persistentSignerStatus("fixture",TARGET_DID,async()=>({ok:false,error:"CORRUPT"}))).status,"SIGNER_UNAVAILABLE");
 });
 
+test("persistent signer bridge rejects arbitrary canonical payloads and non-provenance rooms",async()=>{
+  const pair=generateKeyPairSync("ed25519");
+  const did=testDid(pair.publicKey);
+  let requests=0;
+  const requester=async(_root,request)=>{
+    requests++;
+    if(request.operation==="status")return{ok:true,did};
+    throw Error("unexpected requester call");
+  };
+  const signer=await loadPersistentSigner("fixture",did,requester);
+  await assert.rejects(()=>signer.signCanonical("arbitrary-payload"),/UNAUTHORIZED_CANONICAL_SIGN_PAYLOAD/);
+  await assert.rejects(()=>signer.signRoomMessage("other-room","valid text"),/UNAUTHORIZED_TECHNOCORE_ROOM/);
+  await assert.rejects(()=>signer.signRoomMessage("d-flop-infra","line one\nline two"),/INVALID_TECHNOCORE_ROOM_TEXT/);
+  assert.equal(requests,1);
+});
+
 test("CLI wires the persistent signer instead of passing null",()=>{
   const cli=readFileSync(new URL("../cli.mjs",import.meta.url),"utf8");
   assert.doesNotMatch(cli,/detectSigner\(null\)/);
