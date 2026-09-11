@@ -36,7 +36,7 @@
   "repositoryInventory": [
     {"name": "flop-conformance-lab", "classification": "PUBLIC_ACTIVE"},
     {"name": "flop-session-router", "classification": "PUBLIC_ACTIVE"},
-    {"name": "technocore-did-starter", "classification": "AMBIGUOUS_REMOTE"},
+    {"name": "technocore-did-starter", "classification": "LOCAL_CUSTODY_COMPONENT"},
     {"name": "technocore-did-eligibility", "classification": "PRIVATE_ACTIVE"}
   ]
 }
