@@ -2,14 +2,21 @@
   "schemaVersion": "1",
   "did": "did:key:z6Mks3GkYHmXSXjS639r9399owtxCMpzFexrq6EAziYZnjPk",
   "fingerprint": "62c0aca3721ba547",
-  "signerStatus": "SIGNER_UNAVAILABLE",
+  "signerStatus": "PROOF_OF_CONTROL_VERIFIED",
+  "signerRuntimeStatus": "PENDING_AUTONOMOUS_RUNTIME_VERIFICATION",
+  "signerEvidence": {
+    "room": "d-flop-infra",
+    "ledgerPath": "activity/2026-09.jsonl",
+    "verifiedSequences": [8, 10, 11],
+    "verificationStatus": "VERIFIED"
+  },
   "github": {
     "profile": "https://github.com/retardio73-boop"
   },
   "technocore": {
     "profilePath": "/kv/did-62/c0aca3721ba547",
     "legacyProfilePath": "/kv/did/62c0aca3721ba547",
-    "profileStatus": "MISSING",
+    "profileStatus": "PENDING_PUBLICATION",
     "buildRoom": "d-flop-infra",
     "buildRoomStatus": "ACTIVITY_VERIFIED",
     "buildRoomActivityStatus": "VERIFIED",
