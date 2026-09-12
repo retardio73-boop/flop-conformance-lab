@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 
 export const TECHNOCORE_NAME_RE = /^[a-z0-9][a-z0-9_-]{0,47}$/;
 
@@ -312,4 +313,106 @@ export function parseTransportRecordLossless(rawJson: string): Record<string, un
   const nonce = extractLosslessTransportNonce(rawJson);
   if (nonce !== null) record.nonce = nonce;
   return record;
+}
+
+interface FixtureCase extends Partial<EvidenceRecord>, Partial<SettlementInput> {
+  id: string;
+  expected?: "ACCEPT" | "REJECT" | "IGNORE";
+  reason?: TrustReason;
+  expectedEvidence?: EvidenceLabel[];
+  expectedSettlement?: SettlementEvidence;
+  mailbox?: string;
+  raw?: string;
+  expectedNonce?: string;
+  seq?: number[];
+}
+
+interface AdversarialFixture {
+  schema: string;
+  binding: EvidenceBinding & { room: string };
+  cases: FixtureCase[];
+  provenance: unknown[];
+}
+
+/**
+ * Execute the language-neutral fixture shipped in conformance/fixtures. This is
+ * deliberately deterministic and offline so downstream implementations can run
+ * the same corpus without trusting the live venue or a floating upstream head.
+ */
+export function runAdversarialEvidenceFixture(): Record<string, unknown> {
+  const fixture = JSON.parse(
+    readFileSync(new URL("../conformance/fixtures/adversarial-evidence-suite-v1.json", import.meta.url), "utf8"),
+  ) as AdversarialFixture;
+
+  const failures: Array<{ id: string; error: string }> = [];
+  let passed = 0;
+
+  for (const item of fixture.cases) {
+    try {
+      if (item.raw !== undefined) {
+        const nonce = extractLosslessTransportNonce(item.raw);
+        if (nonce !== item.expectedNonce) throw new Error(`NONCE_MISMATCH:${String(nonce)}`);
+      } else if (item.mailbox !== undefined) {
+        const valid = isValidTechnocoreName(item.mailbox);
+        if ((item.expected === "ACCEPT") !== valid) throw new Error(`MAILBOX_EXPECTATION_MISMATCH:${valid}`);
+      } else if (item.expectedSettlement !== undefined) {
+        const actual = assessSettlementEvidence({
+          rail: item.rail ?? "",
+          valueBearing: item.valueBearing ?? false,
+          lockFrameValid: item.lockFrameValid ?? false,
+          railReferenceVerified: item.railReferenceVerified ?? false,
+          railStateVerified: item.railStateVerified ?? false,
+        });
+        if (actual !== item.expectedSettlement) throw new Error(`SETTLEMENT_MISMATCH:${actual}`);
+      } else if (item.expectedEvidence !== undefined && item.seq !== undefined) {
+        const rows: EvidenceRecord[] = item.seq.map((seq) => ({
+          room: fixture.binding.room,
+          seq,
+          sender: fixture.binding.payer,
+          authenticated: true,
+          type: "lock",
+          frameFrom: fixture.binding.payer,
+          frameContract: fixture.binding.contract,
+        }));
+        const evidence = analyzeTranscriptEvidence(rows);
+        for (const label of item.expectedEvidence) {
+          if (!evidence.labels.includes(label)) throw new Error(`MISSING_EVIDENCE_LABEL:${label}`);
+        }
+      } else if (item.expected !== undefined) {
+        const decision = evaluateRecordTrust({
+          room: fixture.binding.room,
+          seq: item.seq as unknown as number ?? 1,
+          sender: item.sender ?? "",
+          authenticated: item.authenticated ?? false,
+          type: item.type ?? null,
+          frameFrom: item.frameFrom ?? null,
+          frameContract: item.frameContract ?? null,
+          text: item.text ?? null,
+        }, fixture.binding);
+
+        const expectedAccepted = item.expected === "ACCEPT";
+        if (decision.accepted !== expectedAccepted) {
+          throw new Error(`TRUST_EXPECTATION_MISMATCH:${decision.accepted}`);
+        }
+        if (item.reason && !decision.reasons.includes(item.reason)) {
+          throw new Error(`MISSING_REASON:${item.reason}`);
+        }
+      }
+      passed += 1;
+    } catch (error) {
+      failures.push({ id: item.id, error: error instanceof Error ? error.message : "FAILED" });
+    }
+  }
+
+  if (failures.length > 0) {
+    throw new Error(`ADVERSARIAL_EVIDENCE_FIXTURE_FAILED:${JSON.stringify(failures)}`);
+  }
+
+  return {
+    schema: fixture.schema,
+    cases: fixture.cases.length,
+    passed,
+    failures: 0,
+    provenanceItems: fixture.provenance.length,
+  };
 }
