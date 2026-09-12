@@ -73,30 +73,16 @@ export interface SettlementInput {
   railStateVerified: boolean;
 }
 
-/**
- * Apply the minimum trust boundary before a world-writable room record is
- * allowed to affect per-contract state. Cryptographic transport verification
- * happens before this function and is represented by `authenticated`.
- */
 export function evaluateRecordTrust(record: EvidenceRecord, binding: EvidenceBinding): TrustDecision {
   const reasons: TrustReason[] = [];
-
   if (!record.authenticated) reasons.push("UNAUTHENTICATED_TRANSPORT");
   if (!record.type) reasons.push("NON_PROTOCOL_TEXT_IGNORED");
   if (record.frameFrom !== record.sender) reasons.push("SENDER_BINDING_MISMATCH");
-  if (record.frameFrom !== binding.payer && record.frameFrom !== binding.payee) {
-    reasons.push("UNAUTHORIZED_PARTY");
-  }
+  if (record.frameFrom !== binding.payer && record.frameFrom !== binding.payee) reasons.push("UNAUTHORIZED_PARTY");
   if (record.frameContract !== binding.contract) reasons.push("CONTRACT_MISMATCH");
-
   return { accepted: reasons.length === 0, reasons };
 }
 
-/**
- * Classify transcript evidence without pretending that venue seq/ts metadata is
- * authenticated by the sender signature. A complete replay is still not rail
- * settlement proof.
- */
 export function analyzeTranscriptEvidence(records: readonly EvidenceRecord[]): TranscriptEvidence {
   if (records.length === 0) {
     return {
@@ -134,11 +120,7 @@ export function analyzeTranscriptEvidence(records: readonly EvidenceRecord[]): T
       previous = row.seq;
     }
 
-    const seqs = rows
-      .map((row) => row.seq)
-      .filter((seq) => Number.isSafeInteger(seq) && seq >= 1)
-      .sort((a, b) => a - b);
-
+    const seqs = rows.map((row) => row.seq).filter((seq) => Number.isSafeInteger(seq) && seq >= 1).sort((a, b) => a - b);
     for (let index = 1; index < seqs.length; index += 1) {
       const before = seqs[index];
       const after = seqs[index - 1];
@@ -167,16 +149,10 @@ export function analyzeTranscriptEvidence(records: readonly EvidenceRecord[]): T
     contiguous,
     gaps,
     timeAuthority: "VENUE_METADATA_UNAUTHENTICATED",
-    outcomeAuthority: authenticated && ordered && contiguous
-      ? "REPLAYABLE_NOT_SETTLEMENT_PROOF"
-      : "PROVISIONAL",
+    outcomeAuthority: authenticated && ordered && contiguous ? "REPLAYABLE_NOT_SETTLEMENT_PROOF" : "PROVISIONAL",
   };
 }
 
-/**
- * Keep transcript validity, rail-reference verification and actual settlement
- * evidence as separate claims. A paper/rehearsal rail is always NO_VALUE.
- */
 export function assessSettlementEvidence(input: SettlementInput): SettlementEvidence {
   if (!input.valueBearing || input.rail === "paper") return "NO_VALUE";
   if (!input.lockFrameValid) return "TRANSCRIPT_ONLY";
@@ -189,7 +165,6 @@ export function isValidTechnocoreName(name: string): boolean {
   return TECHNOCORE_NAME_RE.test(name);
 }
 
-/** Stable lowercase mailbox name that cannot inherit mixed-case base58 DID bytes. */
 export function deriveSafeMailboxName(did: string, prefix = "mb-p"): string {
   if (did.length === 0) throw new Error("EMPTY_DID");
   const digest = createHash("sha256").update(did, "utf8").digest("hex").slice(0, 24);
@@ -225,7 +200,6 @@ function scanString(raw: string, start: number): number {
 function scanJsonValue(raw: string, start: number): number {
   const first = raw[start];
   if (first === '"') return scanString(raw, start);
-
   if (first === "{" || first === "[") {
     const stack: string[] = [first === "{" ? "}" : "]"];
     let inString = false;
@@ -274,7 +248,6 @@ function topLevelFieldToken(raw: string, field: string): string | null {
     index = skipWhitespace(raw, index + 1);
     const valueStart = index;
     const valueEnd = scanJsonValue(raw, valueStart);
-
     if (key === field) return raw.slice(valueStart, valueEnd).trim();
 
     index = skipWhitespace(raw, valueEnd);
@@ -285,37 +258,27 @@ function topLevelFieldToken(raw: string, field: string): string | null {
     if (raw[index] === "}") return null;
     throw new Error("INVALID_JSON_OBJECT");
   }
-
   throw new Error("UNTERMINATED_JSON_OBJECT");
 }
 
-/**
- * Recover the exact transport nonce digits from raw JSON before JSON.parse can
- * round a 19-digit number past Number.MAX_SAFE_INTEGER.
- */
 export function extractLosslessTransportNonce(rawJson: string): string | null {
   const token = topLevelFieldToken(rawJson, "nonce");
   if (token === null) return null;
   const value = token.startsWith('"') ? JSON.parse(token) as unknown : token;
-  if (typeof value !== "string" || !/^[0-9]{1,19}$/.test(value)) {
-    throw new Error("TRANSPORT_NONCE_NOT_DECIMAL_TEXT");
-  }
+  if (typeof value !== "string" || !/^[0-9]{1,19}$/.test(value)) throw new Error("TRANSPORT_NONCE_NOT_DECIMAL_TEXT");
   return value;
 }
 
-/** Parse the record while restoring exact nonce digits into the parsed object. */
 export function parseTransportRecordLossless(rawJson: string): Record<string, unknown> {
   const parsed = JSON.parse(rawJson) as unknown;
-  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
-    throw new Error("TRANSPORT_RECORD_NOT_OBJECT");
-  }
+  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("TRANSPORT_RECORD_NOT_OBJECT");
   const record = parsed as Record<string, unknown>;
   const nonce = extractLosslessTransportNonce(rawJson);
   if (nonce !== null) record.nonce = nonce;
   return record;
 }
 
-interface FixtureCase extends Partial<EvidenceRecord>, Partial<SettlementInput> {
+interface FixtureCase {
   id: string;
   expected?: "ACCEPT" | "REJECT" | "IGNORE";
   reason?: TrustReason;
@@ -325,6 +288,17 @@ interface FixtureCase extends Partial<EvidenceRecord>, Partial<SettlementInput> 
   raw?: string;
   expectedNonce?: string;
   seq?: number[];
+  sender?: string;
+  authenticated?: boolean;
+  type?: string | null;
+  frameFrom?: string | null;
+  frameContract?: string | null;
+  text?: string | null;
+  rail?: string;
+  valueBearing?: boolean;
+  lockFrameValid?: boolean;
+  railReferenceVerified?: boolean;
+  railStateVerified?: boolean;
 }
 
 interface AdversarialFixture {
@@ -334,11 +308,6 @@ interface AdversarialFixture {
   provenance: unknown[];
 }
 
-/**
- * Execute the language-neutral fixture shipped in conformance/fixtures. This is
- * deliberately deterministic and offline so downstream implementations can run
- * the same corpus without trusting the live venue or a floating upstream head.
- */
 export function runAdversarialEvidenceFixture(): Record<string, unknown> {
   const fixture = JSON.parse(
     readFileSync(new URL("../conformance/fixtures/adversarial-evidence-suite-v1.json", import.meta.url), "utf8"),
@@ -381,7 +350,7 @@ export function runAdversarialEvidenceFixture(): Record<string, unknown> {
       } else if (item.expected !== undefined) {
         const decision = evaluateRecordTrust({
           room: fixture.binding.room,
-          seq: item.seq as unknown as number ?? 1,
+          seq: 1,
           sender: item.sender ?? "",
           authenticated: item.authenticated ?? false,
           type: item.type ?? null,
@@ -391,12 +360,8 @@ export function runAdversarialEvidenceFixture(): Record<string, unknown> {
         }, fixture.binding);
 
         const expectedAccepted = item.expected === "ACCEPT";
-        if (decision.accepted !== expectedAccepted) {
-          throw new Error(`TRUST_EXPECTATION_MISMATCH:${decision.accepted}`);
-        }
-        if (item.reason && !decision.reasons.includes(item.reason)) {
-          throw new Error(`MISSING_REASON:${item.reason}`);
-        }
+        if (decision.accepted !== expectedAccepted) throw new Error(`TRUST_EXPECTATION_MISMATCH:${decision.accepted}`);
+        if (item.reason && !decision.reasons.includes(item.reason)) throw new Error(`MISSING_REASON:${item.reason}`);
       }
       passed += 1;
     } catch (error) {
@@ -404,9 +369,7 @@ export function runAdversarialEvidenceFixture(): Record<string, unknown> {
     }
   }
 
-  if (failures.length > 0) {
-    throw new Error(`ADVERSARIAL_EVIDENCE_FIXTURE_FAILED:${JSON.stringify(failures)}`);
-  }
+  if (failures.length > 0) throw new Error(`ADVERSARIAL_EVIDENCE_FIXTURE_FAILED:${JSON.stringify(failures)}`);
 
   return {
     schema: fixture.schema,
