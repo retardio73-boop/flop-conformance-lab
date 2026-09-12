@@ -12,3 +12,5 @@ jobs:
       - run: npm run check
       - name: Reproduce downstream Sentinel TCLK drift
         run: python3 conformance/reproductions/noobna-flop-sentinel-tclk.py
+      - name: Reproduce downstream Sentinel Sonnet receipt trust gap
+        run: python3 conformance/reproductions/noobna-sonnet-receipt-auth.py
