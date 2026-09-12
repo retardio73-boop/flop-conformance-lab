@@ -1,1 +1,1 @@
-Inspection in progress.
+Verification is pinned to immutable upstream/downstream commits. The executable reproducer is the authority; this directory contains the human-readable interpretation only.
