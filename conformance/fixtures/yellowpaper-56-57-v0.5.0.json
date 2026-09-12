@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1",
+  "id": "FLOP_YELLOWPAPER_56_57_V0_5_0_BOUNDARIES",
+  "classification": "OPEN_ISSUE_BOUNDARY",
+  "upstream": {
+    "repository": "flop-labs/yellowpaper",
+    "version": "0.5.0-draft",
+    "commit": "3eaf2f25bc46a501df225cae4e4e991975f6b2a9",
+    "issues": [56, 57],
+    "sections": ["Appendix F.3", "Appendix G", "R11.2a", "R12.1a", "R12.1b", "§1 hash table"]
+  },
+  "payableBoundary": {
+    "status": "FAIL_CLOSED",
+    "reason": "PAYABLE_SEMANTICS_UNRESOLVED",
+    "unitStatus": "UNRESOLVED",
+    "commonReceiptFields": {
+      "channelIdHex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "finalRootHex": "2222222222222222222222222222222222222222222222222222222222222222",
+      "aggregateGn": "42"
+    },
+    "interpretations": [
+      {"id": "full-reserved-escrow", "payable": "1000"},
+      {"id": "metered-amount", "payable": "420"}
+    ],
+    "mustNotInfer": [
+      "payable_equals_reserved_escrow",
+      "payable_equals_metered_amount",
+      "payable_unit_is_flop_base_units",
+      "settle_reconstructs_payable_by_unspecified_rule"
+    ]
+  },
+  "merkleBoundary": {
+    "status": "TARGET_SPEC_STRUCTURAL_PASS_WITH_OPEN_TEXT_CONFLICT",
+    "nodeRule": "blake2_256(left || right)",
+    "nodePreimageBytes": 64,
+    "nodeCarriesAggregate": false,
+    "aggregateCheck": "ARITHMETIC_SEPARATE",
+    "mustNotInclude": ["aggregate_gn", "subtree_sum"],
+    "vector": {
+      "leftHex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "rightHex": "2222222222222222222222222222222222222222222222222222222222222222",
+      "expectedNodePreimageHex": "11111111111111111111111111111111111111111111111111111111111111112222222222222222222222222222222222222222222222222222222222222222"
+    }
+  },
+  "scope": {
+    "networkMutation": false,
+    "liveSettlement": false,
+    "signatureGeneration": false,
+    "claimIssueResolved": false,
+    "claimPayableSemantics": false,
+    "claimMerkleSumTree": false
+  }
+}
