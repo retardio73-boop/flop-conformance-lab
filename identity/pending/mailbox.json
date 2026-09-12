@@ -1,7 +1,9 @@
 {
   "schemaVersion": "1",
-  "status": "PENDING_SIGNER",
+  "status": "PENDING_PUBLICATION",
   "did": "did:key:z6Mks3GkYHmXSXjS639r9399owtxCMpzFexrq6EAziYZnjPk",
   "mailbox": null,
-  "note": "No mailbox coordinate is claimed until ownership can be established by the exact DID signer."
+  "signerStatus": "PROOF_OF_CONTROL_VERIFIED",
+  "runtimeStatus": "PENDING_AUTONOMOUS_RUNTIME_VERIFICATION",
+  "note": "Mailbox publication is pending. Exact-DID proof of control is already verified; mailbox ownership still requires a signed publish/readback cycle from the autonomous runtime."
 }
