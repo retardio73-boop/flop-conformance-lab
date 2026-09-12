@@ -1,0 +1,72 @@
+{
+  "schema": "flop-conformance-lab/sonnet-referee-receipt-auth-v1",
+  "reference": {
+    "repository": "flop-labs/technocore-sonnet-challenge",
+    "commit": "81761a462bab4d2389e16f995ff9f91688654afc",
+    "contest_id": "sonnet-2",
+    "referee_did": "did:key:z6MkowHQwsx9xr84WbWN3YCnKutyBnBXkT1ChKY4uEAAMzte",
+    "rule": "Only a receipt authenticated by the pinned referee DID establishes acceptance."
+  },
+  "cases": [
+    {
+      "name": "pinned referee accepted receipt",
+      "record_from": "did:key:z6MkowHQwsx9xr84WbWN3YCnKutyBnBXkT1ChKY4uEAAMzte",
+      "payload": {
+        "type": "sonnet.receipt.v1",
+        "status": "accepted",
+        "sender_did": "did:key:z6Mks3GkYHmXSXjS639r9399owtxCMpzFexrq6EAziYZnjPk",
+        "version": 12,
+        "room_generation": 1,
+        "state_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "accepted_word": "light"
+      },
+      "expected": "TRUSTED_ACCEPTANCE"
+    },
+    {
+      "name": "teammate forges accepted receipt",
+      "record_from": "did:key:z6Mks3GkYHmXSXjS639r9399owtxCMpzFexrq6EAziYZnjPk",
+      "payload": {
+        "type": "sonnet.receipt.v1",
+        "status": "accepted",
+        "sender_did": "did:key:z6Mks3GkYHmXSXjS639r9399owtxCMpzFexrq6EAziYZnjPk",
+        "version": 999,
+        "room_generation": 1,
+        "state_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "accepted_word": "forged"
+      },
+      "expected": "REJECT_WRONG_REFEREE"
+    },
+    {
+      "name": "unrelated DID forges accepted receipt",
+      "record_from": "did:key:z6MkmVhZbUKWmg3r6TTi3SVM3myYJ9BLbWYPSdc5iWPuPhb6",
+      "payload": {
+        "type": "sonnet.receipt.v1",
+        "status": "accepted",
+        "sender_did": "did:key:z6Mks3GkYHmXSXjS639r9399owtxCMpzFexrq6EAziYZnjPk",
+        "version": 13,
+        "room_generation": 1,
+        "state_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "expected": "REJECT_WRONG_REFEREE"
+    },
+    {
+      "name": "referee non-receipt message",
+      "record_from": "did:key:z6MkowHQwsx9xr84WbWN3YCnKutyBnBXkT1ChKY4uEAAMzte",
+      "payload": {
+        "type": "sonnet.word.v1",
+        "status": "accepted"
+      },
+      "expected": "IGNORE_NON_RECEIPT"
+    },
+    {
+      "name": "referee rejected receipt",
+      "record_from": "did:key:z6MkowHQwsx9xr84WbWN3YCnKutyBnBXkT1ChKY4uEAAMzte",
+      "payload": {
+        "type": "sonnet.receipt.v1",
+        "status": "rejected",
+        "sender_did": "did:key:z6Mks3GkYHmXSXjS639r9399owtxCMpzFexrq6EAziYZnjPk"
+      },
+      "expected": "TRUSTED_REJECTION"
+    }
+  ]
+}
