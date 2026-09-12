@@ -5,7 +5,7 @@ import { runLab } from "../src/index.js";
 
 test("generated report version matches package metadata", async () => {
   const pkg = JSON.parse(
-    readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+    readFileSync(new URL("../../package.json", import.meta.url), "utf8"),
   ) as { version?: unknown };
 
   assert.equal(typeof pkg.version, "string");
