@@ -40,6 +40,8 @@ node dist/src/cli.js run --router-module ..\flop-session-router\dist\src\index.j
 
 Every command works with stdin closed. No passphrase, wallet, browser login or network mutation is required.
 
+The optional Sonnet-2 Gemini proposal engine is documented in [docs/SONNET_GEMINI.md](docs/SONNET_GEMINI.md). It generates only locally validated planning proposals and has no access to the DID signer or live publishing paths.
+
 ## Normative classifications
 
 Every result is marked `RELEASE_NORMATIVE`, `PINNED_UPSTREAM`, `PROVISIONAL_PR`, `OPEN_ISSUE`, `TARGET_SPEC`, or `LOCAL_POLICY`. The release lane is pinned to package integrity and commit SHA. Floating `main` is never a deterministic CI dependency.
