@@ -17,7 +17,7 @@ Run:
 python3 conformance/reproductions/noobna-flop-sentinel-tclk.py
 ```
 
-The reproducer downloads only immutable raw files pinned by commit SHA, imports the downstream Python module in a temporary directory, and asserts each mismatch. CI runs the reproducer on every push/PR.
+The reproducer is self-contained and encodes source observations taken from the immutable commits above. CI asserts the published mismatch classification on every push/PR; the pinned commits remain the source evidence for independent reinspection.
 
 ## Classification
 
