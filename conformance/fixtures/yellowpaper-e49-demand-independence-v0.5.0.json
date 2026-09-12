@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "1",
+  "id": "FLOP_YELLOWPAPER_E49_DEMAND_INDEPENDENCE_V0_5_0",
+  "classification": "OPEN_ISSUE_BOUNDARY",
+  "upstream": {
+    "repository": "flop-labs/yellowpaper",
+    "version": "0.5.0-draft",
+    "issue": 58,
+    "openItem": "E.49"
+  },
+  "invariants": [
+    "CO_SIGNED_SETTLED_RECEIPT_NE_INDEPENDENT_DEMAND",
+    "DID_COUNT_NE_OPERATOR_COUNT",
+    "NO_AGENTS_ALLOCATION_DERIVATION"
+  ],
+  "cases": [
+    {
+      "id": "settled-co-signed-two-dids",
+      "distinctDids": 2,
+      "coSignedPaidReceipt": true,
+      "settlementVerified": true,
+      "expected": {
+        "settlement": "SETTLED_CO_SIGNED",
+        "demandIndependence": "UNVERIFIED",
+        "operatorCount": "UNVERIFIED",
+        "allocationCredit": "NOT_DERIVED",
+        "reasons": [
+          "CO_SIGNED_SETTLEMENT_DOES_NOT_PROVE_INDEPENDENT_DEMAND",
+          "DID_COUNT_DOES_NOT_PROVE_OPERATOR_COUNT",
+          "E49_DEMAND_INDEPENDENCE_UNRESOLVED",
+          "E38_E40_ALLOCATION_POLICY_NOT_DERIVED"
+        ]
+      }
+    },
+    {
+      "id": "many-authenticated-dids-no-operator-binding",
+      "distinctDids": 10000,
+      "coSignedPaidReceipt": false,
+      "settlementVerified": false,
+      "expected": {
+        "settlement": "UNVERIFIED",
+        "demandIndependence": "UNVERIFIED",
+        "operatorCount": "UNVERIFIED",
+        "allocationCredit": "NOT_DERIVED",
+        "reasons": [
+          "DID_COUNT_DOES_NOT_PROVE_OPERATOR_COUNT",
+          "E49_DEMAND_INDEPENDENCE_UNRESOLVED",
+          "E38_E40_ALLOCATION_POLICY_NOT_DERIVED"
+        ]
+      }
+    },
+    {
+      "id": "single-did-settled-work",
+      "distinctDids": 1,
+      "coSignedPaidReceipt": true,
+      "settlementVerified": true,
+      "expected": {
+        "settlement": "SETTLED_CO_SIGNED",
+        "demandIndependence": "UNVERIFIED",
+        "operatorCount": "UNVERIFIED",
+        "allocationCredit": "NOT_DERIVED",
+        "reasons": [
+          "CO_SIGNED_SETTLEMENT_DOES_NOT_PROVE_INDEPENDENT_DEMAND",
+          "E49_DEMAND_INDEPENDENCE_UNRESOLVED",
+          "E38_E40_ALLOCATION_POLICY_NOT_DERIVED"
+        ]
+      }
+    }
+  ],
+  "scope": {
+    "sybilDetector": false,
+    "operatorAttribution": false,
+    "agentsAllocationFormula": false
+  }
+}
