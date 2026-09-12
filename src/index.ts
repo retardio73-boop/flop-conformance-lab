@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { coreSuites, routerSuite } from "./suites.js";
 import { validateQuoteChannelReceiptFixture } from "./flop-quote-boundary.js";
 import { runAdversarialEvidenceFixture } from "./adversarial-evidence.js";
+import { validateYellowpaper5657Fixture } from "./yellowpaper-open-issues.js";
 import type { LabReport } from "./types.js";
 
 export * from "./types.js";
@@ -12,6 +13,7 @@ export * from "./protocol-ids.js";
 export * from "./differential.js";
 export * from "./flop-quote-boundary.js";
 export * from "./adversarial-evidence.js";
+export * from "./yellowpaper-open-issues.js";
 export * from "./sonnet.js";
 export * from "./sonnet-discussion.js";
 export * from "./sonnet-planning.js";
@@ -32,6 +34,7 @@ function packageVersion(): string {
 export async function runLab(routerModule?: string): Promise<LabReport> {
   const quoteFixture = validateQuoteChannelReceiptFixture();
   const adversarialEvidence = runAdversarialEvidenceFixture();
+  const yellowpaper5657 = validateYellowpaper5657Fixture();
   const cases = [
     ...(await coreSuites()),
     ...(await routerSuite(routerModule)),
@@ -50,6 +53,14 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
       normativeStatus: "TARGET_SPEC" as const,
       durationMs: 0,
       details: quoteFixture,
+    },
+    {
+      id: "flop.yellowpaper-56-57-boundaries",
+      suite: "flop",
+      status: "PASS" as const,
+      normativeStatus: "OPEN_ISSUE" as const,
+      durationMs: 0,
+      details: yellowpaper5657,
     },
   ];
 
