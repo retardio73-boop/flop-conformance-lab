@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { coreSuites, routerSuite } from "./suites.js";
 import { validateQuoteChannelReceiptFixture } from "./flop-quote-boundary.js";
+import { runAdversarialEvidenceFixture } from "./adversarial-evidence.js";
 import type { LabReport } from "./types.js";
 
 export * from "./types.js";
@@ -10,6 +11,7 @@ export * from "./signing.js";
 export * from "./protocol-ids.js";
 export * from "./differential.js";
 export * from "./flop-quote-boundary.js";
+export * from "./adversarial-evidence.js";
 export * from "./sonnet.js";
 export * from "./sonnet-discussion.js";
 export * from "./sonnet-planning.js";
@@ -29,9 +31,18 @@ function packageVersion(): string {
 
 export async function runLab(routerModule?: string): Promise<LabReport> {
   const quoteFixture = validateQuoteChannelReceiptFixture();
+  const adversarialEvidence = runAdversarialEvidenceFixture();
   const cases = [
     ...(await coreSuites()),
     ...(await routerSuite(routerModule)),
+    {
+      id: "evidence.adversarial-suite-v1",
+      suite: "evidence",
+      status: "PASS" as const,
+      normativeStatus: "LOCAL_POLICY" as const,
+      durationMs: 0,
+      details: adversarialEvidence,
+    },
     {
       id: "flop.quote-open-channel-receipt",
       suite: "flop",
