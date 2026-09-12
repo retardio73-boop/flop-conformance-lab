@@ -10,3 +10,5 @@ jobs:
         with: { node-version: 22, cache: npm }
       - run: npm ci --ignore-scripts
       - run: npm run check
+      - name: Reproduce downstream Sentinel TCLK drift
+        run: python3 conformance/reproductions/noobna-flop-sentinel-tclk.py
