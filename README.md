@@ -4,7 +4,7 @@ Interoperability, protocol-drift and boundary conformance testing across FLOP, T
 
 > **Alpha community project. Not an official FLOP Labs product.**
 
-This independent project is not an official FLOP Labs validator and carries no endorsement. TCLK tests TCLK itself; this Lab focuses on boundaries between TCLK, Technocore signed transport, signing/canonicalization, routing implementations, and FLOP target semantics. It performs no settlement and requires no production DID, wallet, FLOP token, passphrase, or API key.
+This independent project is not an official FLOP Labs validator and carries no endorsement. TCLK tests TCLK itself; this Lab focuses on boundaries between TCLK, Technocore signed transport, signing/canonicalization, routing implementations, and FLOP target semantics. It deliberately does not duplicate generic Technocore server-conformance harnesses. It performs no settlement and requires no production DID, wallet, FLOP token, passphrase, or API key.
 
 ## Builder identity
 
@@ -48,7 +48,7 @@ The FLOP Yellow Paper `0.5.0-draft` is an implementation target. Its Appendix H 
 
 ## Maturity
 
-Release `v0.1.3-alpha` is an early public interoperability baseline. Coverage is intentionally focused, not exhaustive. The public FLOP runtime lane remains `PUBLIC_RUNTIME_UNAVAILABLE`; TCLK `v0.1.0` itself is alpha and its shipped rehearsal rail does not move value.
+Release `v0.1.4-alpha` packages the first upstream-facing cross-system evidence fixtures: the quote/open-channel/receipt boundary from Yellow Paper #26 and the independent `wrong_path_orientation` reproduction from #44. Coverage remains intentionally focused rather than exhaustive. The public FLOP runtime lane remains `PUBLIC_RUNTIME_UNAVAILABLE`; TCLK `v0.1.0` itself is alpha and its shipped rehearsal rail does not move value.
 
 ## Security
 
