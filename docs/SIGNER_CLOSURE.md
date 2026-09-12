@@ -49,6 +49,8 @@ All of the following must be true in steady state:
 - negative tests fail closed for signer loss, identity mismatch, invalid signature, stale/duplicate input and interrupted publication;
 - durable public state contains no stale `PENDING_SIGNER` or stale `SIGNER_UNAVAILABLE` values.
 
+The end-to-end Gemini-backed unattended runtime gate is specified separately in [`AUTONOMOUS_AGENT_CLOSURE.md`](AUTONOMOUS_AGENT_CLOSURE.md). Passing local signer checks alone is not enough to promote `PENDING_AUTONOMOUS_RUNTIME_VERIFICATION` to `VERIFIED`.
+
 ## Evidence rule
 
 A status may move to `VERIFIED` only from inspectable evidence: signature verification, public readback, local deterministic verification, or CI/test output. Status files must not be manually promoted merely to reflect expected runtime state.
