@@ -5,6 +5,7 @@
   "room": "d-flop-infra",
   "lastObservedStatus": "VERIFIED_ACTIVITY",
   "ownershipStatus": "UNVERIFIED",
-  "signerStatus": "SIGNER_UNAVAILABLE",
-  "note": "Signed activity for this DID has been verified in d-flop-infra. Current room ownership remains unverified, and no new write is authorized while the exact-DID signer is unavailable."
+  "signerStatus": "PROOF_OF_CONTROL_VERIFIED",
+  "runtimeStatus": "PENDING_AUTONOMOUS_RUNTIME_VERIFICATION",
+  "note": "Signed activity for this exact DID is publicly verified in d-flop-infra. Room ownership and unattended runtime reachability remain separate claims and must be verified independently."
 }
