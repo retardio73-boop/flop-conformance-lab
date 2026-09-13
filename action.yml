@@ -14,6 +14,14 @@ inputs:
     required: false
     default: conformance-report.json
 
+outputs:
+  result:
+    description: Portable conformance result (PASS, PARTIAL, or FAIL)
+    value: ${{ steps.result.outputs.result }}
+  report:
+    description: Absolute path to the generated conformance report
+    value: ${{ steps.result.outputs.report }}
+
 runs:
   using: composite
   steps:
@@ -36,3 +44,11 @@ runs:
           --profile "${{ inputs.profile }}" \
           --input "${{ github.workspace }}/${{ inputs.input }}" \
           --out "${{ github.workspace }}/${{ inputs.out }}"
+    - name: Export portable result
+      id: result
+      shell: bash
+      run: |
+        REPORT="${{ github.workspace }}/${{ inputs.out }}"
+        RESULT="$(node -e 'const fs=require("node:fs");const p=process.argv[1];const j=JSON.parse(fs.readFileSync(p,"utf8"));if(!["PASS","PARTIAL","FAIL"].includes(j.result))process.exit(2);process.stdout.write(j.result)' "$REPORT")"
+        echo "result=$RESULT" >> "$GITHUB_OUTPUT"
+        echo "report=$REPORT" >> "$GITHUB_OUTPUT"
