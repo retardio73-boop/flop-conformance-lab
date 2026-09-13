@@ -11,13 +11,22 @@ const base = {
 };
 
 test("portable work evidence snapshots source data and hashes canonical content", () => {
-  const input = { ...base, requestBytes: "req", responseBytes: "resp", workProofBytes: "proof" };
+  const input = {
+    ...base,
+    requestBytes: "req",
+    responseBytes: "resp",
+    workProofBytes: "proof",
+    transport: { room: "d-flop-infra", generation: 3, seq: 42, availability: "LIVE_PAGE" as const },
+  };
   const evidence = portableWorkEvidence(input);
   assert.equal(evidence.state, "EXECUTION_VERIFIED");
   assert.equal(evidence.allocationCredit, "NOT_DERIVED");
+  assert.equal(evidence.input.transport?.availability, "LIVE_PAGE");
   assert.equal(evidence.sha256.length, 64);
   input.sessionId = "mutated";
+  input.transport.availability = "UNAVAILABLE";
   assert.equal(evidence.input.sessionId, "session-1");
+  assert.equal(evidence.input.transport?.availability, "LIVE_PAGE");
   assertNoAllocationInference(evidence);
 });
 
@@ -30,8 +39,20 @@ test("settlement evidence is classified separately from execution", () => {
     settlementBytes: "settlement",
     settlementAmount: "42",
     settlementAsset: "FLOP",
+    transport: { room: "deal-room", generation: 2, seq: 19, availability: "RETAINED_RING" },
   });
   assert.equal(evidence.state, "SETTLEMENT_VERIFIED");
+  assert.equal(evidence.input.transport?.availability, "RETAINED_RING");
+  assert.equal(evidence.allocationCredit, "NOT_DERIVED");
+});
+
+test("local snapshot provenance remains explicit when transport is unavailable", () => {
+  const evidence = portableWorkEvidence({
+    ...base,
+    transport: { room: "old-room", generation: 1, seq: 7, availability: "LOCAL_SNAPSHOT" },
+  });
+  assert.equal(evidence.state, "OBSERVED");
+  assert.equal(evidence.input.transport?.availability, "LOCAL_SNAPSHOT");
   assert.equal(evidence.allocationCredit, "NOT_DERIVED");
 });
 
