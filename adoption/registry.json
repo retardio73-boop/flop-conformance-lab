@@ -1,0 +1,34 @@
+{
+  "schema": "flop-conformance-adoption-registry/v1",
+  "updatedAt": "2026-09-13T18:15:00Z",
+  "entries": [
+    {
+      "implementation": "Mariukasfak/flop-evidence-scout",
+      "profile": "technocore-agent",
+      "status": "PROPOSED",
+      "evidence": {
+        "issue": "https://github.com/Mariukasfak/flop-evidence-scout/issues/9",
+        "labCommit": "3ddcad34cec2edfdc10f5f230156c4c1f0ea0b70"
+      },
+      "claim": "Proposal opened; no external CI consumption is claimed yet."
+    },
+    {
+      "implementation": "Noobna/flop-sentinel",
+      "profile": "tclk-transcript",
+      "status": "CANDIDATE",
+      "evidence": {
+        "reason": "Existing independent downstream reproduction; external issue creation blocked by GitHub integration permissions."
+      },
+      "claim": "Candidate only; no integration or adoption claim."
+    },
+    {
+      "implementation": "congge918/technocore-tclk-deal-scout",
+      "profile": "tclk-transcript",
+      "status": "CANDIDATE",
+      "evidence": {
+        "reason": "Strong structural fit for positive TCLK evidence; external issue creation blocked by GitHub integration permissions."
+      },
+      "claim": "Candidate only; no integration or adoption claim."
+    }
+  ]
+}
