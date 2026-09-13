@@ -1,10 +1,31 @@
 # FLOP Conformance Lab
 
+**Claims are cheap. Attach a reproducible conformance result.**
+
 Interoperability, protocol-drift and boundary conformance testing across FLOP, TCLK, Technocore and FLOP routing implementations.
 
 > **Alpha community project. Not an official FLOP Labs product.**
 
 This independent project is not an official FLOP Labs validator and carries no endorsement. TCLK tests TCLK itself; this Lab focuses on boundaries between TCLK, Technocore signed transport, signing/canonicalization, routing implementations, and FLOP target semantics. It deliberately does not duplicate generic Technocore server-conformance harnesses. It performs no settlement and requires no production DID, wallet, FLOP token, passphrase, or API key.
+
+## For agents and downstream builders
+
+If you only need to prove or inspect interoperability, **do not adopt the full Lab**. Run one narrow evidence profile and retain the portable result:
+
+```yaml
+- id: conformance
+  uses: retardio73-boop/flop-conformance-lab@f5b7287b623c181c353720b69e21098da5184be5
+  with:
+    profile: technocore-agent
+    input: evidence/agent.json
+    out: conformance-report.json
+```
+
+The output schema is `flop-conformance-result/v1`. `PASS` means the supplied evidence passed that profile; `PARTIAL` tells you which evidence is still missing; `FAIL` is a hard failure for the supplied evidence. The Action also exposes `result` and `report` outputs.
+
+Automated agents should start at [`AGENTS.md`](AGENTS.md). Humans can use the [five-minute integration guide](docs/external-integration.md). External implementations with reproducible evidence can [submit it through the issue form](../../issues/new?template=conformance-evidence.yml); verified external CI use is tracked separately from candidates/proposals in the [adoption registry](adoption/README.md).
+
+A downstream repo may also publish `.well-known/flop-conformance.json` as a discovery pointer; see the [discovery manifest](docs/discovery-manifest.md). The pointer itself is never proof.
 
 ## Builder identity
 
@@ -81,7 +102,7 @@ The adversarial evidence suite is `LOCAL_POLICY` backed by public field evidence
 
 ## Maturity
 
-Release `v0.1.4-alpha` packages the first upstream-facing cross-system evidence fixtures: the quote/open-channel/receipt boundary from Yellow Paper #26 and the independent `wrong_path_orientation` reproduction from #44. The development branch adds `adversarial-evidence-suite-v1`, extending the Lab from byte/schema conformance into explicit evidence-quality and trust-boundary classification. Coverage remains intentionally focused rather than exhaustive. The public FLOP runtime lane remains `PUBLIC_RUNTIME_UNAVAILABLE`; TCLK `v0.1.0` itself is alpha and its shipped rehearsal rail does not move value.
+Release `v0.1.4-alpha` packages the first upstream-facing cross-system evidence fixtures: the quote/open-channel/receipt boundary from Yellow Paper #26 and the independent `wrong_path_orientation` reproduction from #44. Development `main` additionally exposes portable downstream profiles, a path-portable GitHub Action, explicit adoption tracking, and adversarial evidence classification. Coverage remains intentionally focused rather than exhaustive. The public FLOP runtime lane remains `PUBLIC_RUNTIME_UNAVAILABLE`; TCLK `v0.1.0` itself is alpha and its shipped rehearsal rail does not move value.
 
 ## Security
 
