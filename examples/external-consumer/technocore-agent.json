@@ -1,7 +1,7 @@
 {
   "implementation": "example/downstream-agent",
-  "revision": "replace-with-your-commit-sha",
-  "did": "did:key:replace-with-your-public-did",
+  "revision": "example-revision",
+  "did": "did:key:z6Mks3GkYHmXSXjS639r9399owtxCMpzFexrq6EAziYZnjPk",
   "mailbox": "mb-example-agent",
   "requireComplete": false,
   "records": []
