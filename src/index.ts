@@ -23,6 +23,7 @@ export * from "./sonnet.js";
 export * from "./sonnet-discussion.js";
 export * from "./sonnet-planning.js";
 export * from "./sonnet-state.js";
+export * from "./profiles.js";
 
 function packageVersion(): string {
   const metadata = JSON.parse(
