@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { assertNoAllocationInference, portableWorkEvidence } from "../src/work-evidence.js";
+import { assertNoAllocationInference, portableWorkEvidence, type WorkEvidenceInput } from "../src/work-evidence.js";
 
 const base = {
   agentDid: "did:key:z6Mkagent",
@@ -11,12 +11,12 @@ const base = {
 };
 
 test("portable work evidence snapshots source data and hashes canonical content", () => {
-  const input = {
+  const input: WorkEvidenceInput = {
     ...base,
     requestBytes: "req",
     responseBytes: "resp",
     workProofBytes: "proof",
-    transport: { room: "d-flop-infra", generation: 3, seq: 42, availability: "LIVE_PAGE" as const },
+    transport: { room: "d-flop-infra", generation: 3, seq: 42, availability: "LIVE_PAGE" },
   };
   const evidence = portableWorkEvidence(input);
   assert.equal(evidence.state, "EXECUTION_VERIFIED");
@@ -24,7 +24,7 @@ test("portable work evidence snapshots source data and hashes canonical content"
   assert.equal(evidence.input.transport?.availability, "LIVE_PAGE");
   assert.equal(evidence.sha256.length, 64);
   input.sessionId = "mutated";
-  input.transport.availability = "UNAVAILABLE";
+  if (input.transport) input.transport.availability = "UNAVAILABLE";
   assert.equal(evidence.input.sessionId, "session-1");
   assert.equal(evidence.input.transport?.availability, "LIVE_PAGE");
   assertNoAllocationInference(evidence);
