@@ -5,7 +5,7 @@
   "type": "module",
   "bin": { "flop-conformance": "dist/src/cli.js" },
   "exports": { ".": "./dist/src/index.js" },
-  "files": ["dist/src", "dist/conformance", "conformance", "README.md", "LICENSE", "SECURITY.md", "NOTICE", "CHANGELOG.md"],
+  "files": ["dist/src", "dist/conformance", "conformance", "README.md", "START_HERE.md", "docs/external-integration.md", "examples/external-consumer", "LICENSE", "SECURITY.md", "NOTICE", "CHANGELOG.md"],
   "engines": { "node": ">=22.13" },
   "scripts": {
     "build": "tsc -b --clean && tsc -p tsconfig.json && node tools/copy-assets.js",
@@ -14,9 +14,10 @@
     "conformance": "node dist/src/cli.js run --suite all",
     "pack:check": "npm pack --dry-run",
     "package:smoke": "npm run build && node tools/package-smoke.js",
+    "quickstart": "npm run build && node dist/src/cli.js verify --profile technocore-agent --input examples/external-consumer/technocore-agent.json --out conformance-report.json",
     "check": "npm run typecheck && npm test && npm run conformance && npm run pack:check && npm run package:smoke"
   },
-  "keywords": ["flop", "tclk", "technocore", "conformance", "interoperability"],
+  "keywords": ["flop", "tclk", "technocore", "conformance", "interoperability", "ai-agents", "ci", "evidence"],
   "license": "Apache-2.0",
   "dependencies": { "@flop-labs/tclk": "0.1.0" },
   "devDependencies": { "@types/node": "^24.0.0", "typescript": "^5.9.0" }
