@@ -1,0 +1,46 @@
+{
+  "schema": "tclk.provisional-hardening.v1",
+  "classification": "PROVISIONAL_PR",
+  "observedAt": "2026-09-13",
+  "upstreamBase": "5cc4ab93efbc8999a3a7e1471b639deca25998ea",
+  "sources": [
+    {
+      "pr": 160,
+      "url": "https://github.com/flop-labs/tclk/pull/160",
+      "head": "776bba4e8e60f387a8de920670ce67bcad66060d",
+      "claim": "state-note serializer should reject statuses its paired parser cannot read"
+    },
+    {
+      "pr": 161,
+      "url": "https://github.com/flop-labs/tclk/pull/161",
+      "head": "8d8132c8f9cabf7ccbde78de41641353652dd48d",
+      "claim": "accepted offer terms and lock pre-signatures should be snapshotted rather than retained by reference"
+    }
+  ],
+  "nonClaims": [
+    "Neither PR is treated as release-normative until merged/released upstream.",
+    "No wire-format, custody, settlement, or state-transition semantics are invented here."
+  ],
+  "cases": [
+    {
+      "id": "state-note-serializer-parser-closure",
+      "expected": "invalid runtime status is rejected before serialization"
+    },
+    {
+      "id": "accepted-offer-post-mutation-immutability",
+      "expected": "later mutation of caller-owned offer fields cannot alter accepted snapshot"
+    },
+    {
+      "id": "lock-presig-post-mutation-immutability",
+      "expected": "later mutation of caller-owned presig cannot alter accepted snapshot"
+    },
+    {
+      "id": "refund-deadline-post-mutation-immutability",
+      "expected": "later mutation of caller-owned refundAfterMs cannot change a decision based on the accepted snapshot"
+    },
+    {
+      "id": "portable-evidence-snapshot",
+      "expected": "portable evidence keeps canonical bytes and digest independent of later object mutation"
+    }
+  ]
+}
