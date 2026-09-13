@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import type { ProvenanceAvailability } from "./technocore-recovery.js";
 
 export type WorkEvidenceState =
   | "OBSERVED"
@@ -17,6 +18,12 @@ export interface WorkEvidenceInput {
   settlementBytes?: string;
   settlementAmount?: string;
   settlementAsset?: string;
+  transport?: {
+    room?: string;
+    generation?: number;
+    seq?: number;
+    availability?: ProvenanceAvailability;
+  };
   source: {
     system: string;
     ref: string;
@@ -48,13 +55,14 @@ export function portableWorkEvidence(input: WorkEvidenceInput): PortableWorkEvid
     : hasExecution
       ? "EXECUTION_VERIFIED"
       : "OBSERVED";
-  const canonical = canonicalize({ schema: "flop.work-evidence.v1", state, input, allocationCredit: "NOT_DERIVED" });
+  const frozenInput = structuredClone(input);
+  const canonical = canonicalize({ schema: "flop.work-evidence.v1", state, input: frozenInput, allocationCredit: "NOT_DERIVED" });
   return {
     schema: "flop.work-evidence.v1",
     state,
     canonical,
     sha256: createHash("sha256").update(canonical, "utf8").digest("hex"),
-    input: structuredClone(input),
+    input: frozenInput,
     allocationCredit: "NOT_DERIVED",
   };
 }
