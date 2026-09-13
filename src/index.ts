@@ -4,6 +4,7 @@ import { validateQuoteChannelReceiptFixture } from "./flop-quote-boundary.js";
 import { runAdversarialEvidenceFixture } from "./adversarial-evidence.js";
 import { validateYellowpaper5657Fixture } from "./yellowpaper-open-issues.js";
 import { validateDemandIndependenceFixture } from "./demand-independence.js";
+import { validateSybilEconomicsFixture } from "./sybil-economics.js";
 import type { LabReport } from "./types.js";
 
 export * from "./types.js";
@@ -16,6 +17,7 @@ export * from "./flop-quote-boundary.js";
 export * from "./adversarial-evidence.js";
 export * from "./yellowpaper-open-issues.js";
 export * from "./demand-independence.js";
+export * from "./sybil-economics.js";
 export * from "./sonnet.js";
 export * from "./sonnet-discussion.js";
 export * from "./sonnet-planning.js";
@@ -38,6 +40,7 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
   const adversarialEvidence = runAdversarialEvidenceFixture();
   const yellowpaper5657 = validateYellowpaper5657Fixture();
   const demandIndependence = validateDemandIndependenceFixture();
+  const sybilEconomics = validateSybilEconomicsFixture();
   const cases = [
     ...(await coreSuites()),
     ...(await routerSuite(routerModule)),
@@ -72,6 +75,14 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
       normativeStatus: "OPEN_ISSUE" as const,
       durationMs: 0,
       details: demandIndependence,
+    },
+    {
+      id: "flop.issue-58-sybil-economics",
+      suite: "flop",
+      status: "PASS" as const,
+      normativeStatus: "OPEN_ISSUE" as const,
+      durationMs: 0,
+      details: sybilEconomics,
     },
   ];
 
