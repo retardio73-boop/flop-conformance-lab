@@ -112,4 +112,4 @@ test("invalid model inputs fail closed", () => {
     opportunityCostPpm: 0,
     hypotheticalRewardPerIdentity: "0",
   }), /STAKE_PER_IDENTITY_MUST_BE_UINT_STRING/);
-}
+});
