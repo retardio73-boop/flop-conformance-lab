@@ -19,6 +19,7 @@ export * from "./yellowpaper-open-issues.js";
 export * from "./demand-independence.js";
 export * from "./sybil-economics.js";
 export * from "./tclk-provisional-hardening.js";
+export * from "./work-evidence.js";
 export * from "./sonnet.js";
 export * from "./sonnet-discussion.js";
 export * from "./sonnet-planning.js";
@@ -42,6 +43,12 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
   const yellowpaper5657 = validateYellowpaper5657Fixture();
   const demandIndependence = validateDemandIndependenceFixture();
   const sybilEconomics = validateSybilEconomicsFixture();
+  const d0440Conflict = JSON.parse(
+    readFileSync(
+      new URL("../conformance/fixtures/flop-d0440-source-conflict.json", import.meta.url),
+      "utf8",
+    ),
+  ) as Record<string, unknown>;
   const cases = [
     ...(await coreSuites()),
     ...(await routerSuite(routerModule)),
@@ -84,6 +91,14 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
       normativeStatus: "OPEN_ISSUE" as const,
       durationMs: 0,
       details: sybilEconomics,
+    },
+    {
+      id: "flop.d0440-official-source-conflict",
+      suite: "flop",
+      status: "PASS" as const,
+      normativeStatus: "OPEN_ISSUE" as const,
+      durationMs: 0,
+      details: d0440Conflict,
     },
   ];
 
