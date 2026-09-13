@@ -18,6 +18,7 @@ export * from "./adversarial-evidence.js";
 export * from "./yellowpaper-open-issues.js";
 export * from "./demand-independence.js";
 export * from "./sybil-economics.js";
+export * from "./tclk-provisional-hardening.js";
 export * from "./sonnet.js";
 export * from "./sonnet-discussion.js";
 export * from "./sonnet-planning.js";
