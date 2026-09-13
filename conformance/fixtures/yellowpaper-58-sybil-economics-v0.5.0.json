@@ -1,0 +1,128 @@
+{
+  "schemaVersion": "1",
+  "id": "FLOP_YELLOWPAPER_58_SYBIL_ECONOMICS_V0_5_0",
+  "classification": "OPEN_ISSUE_BOUNDARY_WITH_LOCAL_MODEL",
+  "upstream": {
+    "repository": "flop-labs/yellowpaper",
+    "version": "0.5.0-draft",
+    "issue": 58,
+    "openItems": ["E.38", "E.40", "E.49"],
+    "agentIdentityMinStake": "10"
+  },
+  "model": {
+    "status": "LOCAL_NON_NORMATIVE",
+    "inequality": "consumed_cost(N) + opportunity_cost(N) >= attributable_reward(N)",
+    "rewardInputsAreHypothetical": true,
+    "assumptions": [
+      "stake treatment is an explicit scenario input until upstream defines it",
+      "locked refundable capital is tracked separately from consumed cost",
+      "slashing risk is not monetized without a normative slash condition and probability model",
+      "reward inputs are scenario variables and are not FLOP faucet or airdrop parameters",
+      "DID count is not operator count",
+      "settled work is not automatically independent demand"
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "locked-1-zero-reward",
+      "identityCount": 1,
+      "stakePerIdentity": "10",
+      "stakeTreatment": "LOCKED",
+      "consumedFeePerIdentity": "0",
+      "opportunityCostPpm": 0,
+      "hypotheticalRewardPerIdentity": "0"
+    },
+    {
+      "id": "locked-10k-zero-reward",
+      "identityCount": 10000,
+      "stakePerIdentity": "10",
+      "stakeTreatment": "LOCKED",
+      "consumedFeePerIdentity": "0",
+      "opportunityCostPpm": 0,
+      "hypotheticalRewardPerIdentity": "0"
+    },
+    {
+      "id": "locked-10k-with-opportunity-cost",
+      "identityCount": 10000,
+      "stakePerIdentity": "10",
+      "stakeTreatment": "LOCKED",
+      "consumedFeePerIdentity": "1",
+      "opportunityCostPpm": 50000,
+      "hypotheticalRewardPerIdentity": "0"
+    },
+    {
+      "id": "burned-10k-hypothetical-linear-reward",
+      "identityCount": 10000,
+      "stakePerIdentity": "10",
+      "stakeTreatment": "BURNED",
+      "consumedFeePerIdentity": "1",
+      "opportunityCostPpm": 0,
+      "hypotheticalRewardPerIdentity": "5"
+    },
+    {
+      "id": "unresolved-10k-hypothetical-linear-reward",
+      "identityCount": 10000,
+      "stakePerIdentity": "10",
+      "stakeTreatment": "UNRESOLVED",
+      "consumedFeePerIdentity": "1",
+      "opportunityCostPpm": 50000,
+      "hypotheticalRewardPerIdentity": "5"
+    }
+  ],
+  "promotionCanary": {
+    "currentStatus": "OPEN_ISSUE",
+    "targetStatus": "TARGET_SPEC",
+    "criteria": [
+      {
+        "id": "stake-treatment-defined",
+        "satisfied": false,
+        "requirement": "Upstream normatively defines whether agent_identity_min_stake is refundable/locked, burned, slashable, or a precisely specified combination."
+      },
+      {
+        "id": "independent-demand-defined",
+        "satisfied": false,
+        "requirement": "Upstream normatively defines the evidence required to classify demand as economically independent."
+      },
+      {
+        "id": "multi-did-attribution-rule-defined",
+        "satisfied": false,
+        "requirement": "Upstream defines what protocol-verifiable signals may affect multiple-DID attribution without assuming DID count equals operator count."
+      },
+      {
+        "id": "agent-allocation-formula-defined",
+        "satisfied": false,
+        "requirement": "E.38/E.40 or successor text normatively defines the Agents allocation/credit formula used for implementation."
+      },
+      {
+        "id": "per-did-benefit-rule-defined",
+        "satisfied": false,
+        "requirement": "Any faucet, testnet credit, or other per-DID benefit relevant to the economic model is normatively specified, including caps and eligibility."
+      },
+      {
+        "id": "wash-spend-treatment-defined",
+        "satisfied": false,
+        "requirement": "Upstream defines how recycled spend/wash demand is treated for eligibility or allocation credit."
+      }
+    ]
+  },
+  "empiricalLane": {
+    "status": "WAITING_FOR_PUBLIC_DATASET",
+    "sourceClaim": "Issue #58 reports signature-verifying Technocore observations and offers the dataset/transcripts, but the Lab has not imported or independently verified them.",
+    "acceptanceRequirements": [
+      "publicly retrievable immutable dataset or fixture subset",
+      "documented capture scope and sampling limitations",
+      "offline-verifiable signatures or hashes",
+      "deterministic parser/reproducer",
+      "no inference from DID count to operator count without an explicit evidence rule"
+    ],
+    "importedObservations": 0
+  },
+  "scope": {
+    "sybilDetector": false,
+    "operatorAttribution": false,
+    "faucetRule": false,
+    "airdropFormula": false,
+    "normativeEconomics": false,
+    "liveNetworkMutation": false
+  }
+}
