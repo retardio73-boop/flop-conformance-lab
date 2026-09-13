@@ -20,6 +20,8 @@ export * from "./demand-independence.js";
 export * from "./sybil-economics.js";
 export * from "./tclk-provisional-hardening.js";
 export * from "./work-evidence.js";
+export * from "./technocore-recovery.js";
+export * from "./contactability.js";
 export * from "./sonnet.js";
 export * from "./sonnet-discussion.js";
 export * from "./sonnet-planning.js";
@@ -47,6 +49,12 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
   const d0440Conflict = JSON.parse(
     readFileSync(
       new URL("../conformance/fixtures/flop-d0440-source-conflict.json", import.meta.url),
+      "utf8",
+    ),
+  ) as Record<string, unknown>;
+  const technocore842 = JSON.parse(
+    readFileSync(
+      new URL("../conformance/fixtures/technocore-842-recovery-boundary.json", import.meta.url),
       "utf8",
     ),
   ) as Record<string, unknown>;
@@ -100,6 +108,14 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
       normativeStatus: "OPEN_ISSUE" as const,
       durationMs: 0,
       details: d0440Conflict,
+    },
+    {
+      id: "technocore.pr842-bounded-recovery",
+      suite: "technocore",
+      status: "PASS" as const,
+      normativeStatus: "PROVISIONAL_PR" as const,
+      durationMs: 0,
+      details: technocore842,
     },
   ];
 
