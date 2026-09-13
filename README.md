@@ -57,6 +57,20 @@ node dist/src/cli.js run --router-module ..\flop-session-router\dist\src\index.j
 
 Every command works with stdin closed. No passphrase, wallet, browser login or network mutation is required.
 
+## Use from another implementation
+
+The Lab also exposes narrow evidence profiles so downstream tools can run cross-system checks in their own CI without adopting the full Lab:
+
+```bash
+node dist/src/cli.js profiles
+node dist/src/cli.js verify --profile technocore-agent --input evidence/agent.json --out conformance-report.json
+node dist/src/cli.js verify --profile tclk-transcript --input evidence/transcript.json --out conformance-report.json
+```
+
+The portable output schema is `flop-conformance-result/v1`. `PASS`, `PARTIAL`, and `FAIL` distinguish verified supplied evidence from incomplete evidence and hard conformance failures. A profile PASS is not a FLOP Labs certification and never upgrades transcript activity into a settlement claim.
+
+A reusable root `action.yml` provides the same interface for GitHub Actions. Consumers should pin an immutable release tag or commit and retain `conformance-report.json` as CI evidence. See [`docs/external-integration.md`](docs/external-integration.md) and [`schemas/flop-conformance-result-v1.schema.json`](schemas/flop-conformance-result-v1.schema.json).
+
 ## Normative classifications
 
 Every result is marked `RELEASE_NORMATIVE`, `PINNED_UPSTREAM`, `PROVISIONAL_PR`, `OPEN_ISSUE`, `TARGET_SPEC`, or `LOCAL_POLICY`. The release lane is pinned to package integrity and commit SHA. Floating `main` is never a deterministic CI dependency.
