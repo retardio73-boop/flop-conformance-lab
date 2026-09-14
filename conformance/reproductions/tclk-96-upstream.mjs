@@ -1,99 +1,88 @@
-import {
-  dealRoom,
-  encodeFrame,
-  foldTranscript,
-  generateHashLock,
-  makeAccept,
-  makeOffer,
-  verifyTranscriptRecord,
-} from "@flop-labs/tclk";
-import { ed25519 } from "@noble/curves/ed25519.js";
-import { base58, base64urlnopad } from "@scure/base";
+import { pathToFileURL } from "node:url";
+import path from "node:path";
 
-const T0 = 1_780_000_000_000;
-const PAYER_SEED = Uint8Array.from(Array.from({ length: 32 }, (_, i) => i + 1));
-const PAYEE_SEED = Uint8Array.from(Array.from({ length: 32 }, (_, i) => 64 - i));
+const root = process.env.TCLK_UPSTREAM_ROOT;
+if (!root) throw new Error("TCLK_UPSTREAM_ROOT_REQUIRED");
 
-function didFromSeed(seed) {
-  const pub = ed25519.getPublicKey(seed);
-  const tagged = new Uint8Array(34);
-  tagged[0] = 0xed;
-  tagged[1] = 0x01;
-  tagged.set(pub, 2);
-  return `did:key:z${base58.encode(tagged)}`;
+const tclk = await import(pathToFileURL(path.resolve(root, "dist/index.js")).href);
+const signing = await import(pathToFileURL(path.resolve(root, "mcp/dist/signing.js")).href);
+const tools = await import(pathToFileURL(path.resolve(root, "mcp/dist/tools.js")).href);
+
+const { dealRoom, decodeFrame, foldTranscript, verifyTranscriptRecord } = tclk;
+const { canonicalMessage, signerFromSeed } = signing;
+const { createHandlers } = tools;
+
+function hexToBytes(hex) {
+  const out = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < out.length; i += 1) out[i] = Number.parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+  return out;
 }
 
-function signRecord(seed, room, nonce, line, seq, timestampMs) {
-  const canonical = `${room}|${nonce}|${line}`;
+const PAYER_SEED = "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60";
+const PAYEE_SEED = "4ccd089b28ff96da9db6c346ec114e0f5b8a319f35aba624da8cf6ed4fb8a6fb";
+const NOW = 1_735_000_000_000;
+const payer = signerFromSeed(hexToBytes(PAYER_SEED));
+const payee = signerFromSeed(hexToBytes(PAYEE_SEED));
+const h = createHandlers({ env: {} });
+
+const offerFields = {
+  from: payer.did,
+  role: "payer",
+  amount: "1000",
+  asset: "USDC",
+  lock: "hash",
+  rails: ["flop-htlc"],
+  claimByMs: NOW + 3_600_000,
+  refundAfterMs: NOW + 7_200_000,
+  expiresMs: NOW + 600_000,
+  nonce: "00112233445566778899aabb",
+};
+
+const offer = h.tclk_make_offer(offerFields);
+const accept = h.tclk_accept_offer({ offer: offer.line, from: payee.did });
+const lock = h.tclk_make_lock({
+  from: payer.did,
+  contract: accept.contract,
+  rail: "flop-htlc",
+  ref: "escrow-96",
+});
+const reveal = h.tclk_make_reveal({
+  from: payee.did,
+  contract: accept.contract,
+  ref: "escrow-96",
+  secret: accept.secret,
+});
+const refund = h.tclk_make_refund({
+  from: payer.did,
+  contract: accept.contract,
+  ref: "escrow-96",
+  reason: "deadline",
+});
+
+function record(line, index, timestampMs) {
+  const frame = decodeFrame(line);
+  const room = frame.type === "offer" || frame.type === "accept" ? "tclk-offers" : dealRoom(frame.contract);
+  const signer = frame.from === payee.did ? payee : payer;
+  const nonce = String(1000 + index);
   return {
     room,
-    seq,
+    seq: index,
     timestampMs,
-    sender: didFromSeed(seed),
+    sender: signer.did,
     nonce,
-    signature: base64urlnopad.encode(ed25519.sign(new TextEncoder().encode(canonical), seed)),
+    signature: signer.sign(canonicalMessage(room, nonce, line)),
     line,
   };
 }
 
-const payerDid = didFromSeed(PAYER_SEED);
-const payeeDid = didFromSeed(PAYEE_SEED);
-const { preimage, hash } = generateHashLock();
-const offer = makeOffer({
-  from: payerDid,
-  role: "payer",
-  lock: "hash",
-  amount: "1000000",
-  asset: "FLOP",
-  rails: ["paper"],
-  claimByMs: T0 + 3_600_000,
-  refundAfterMs: T0 + 7_200_000,
-  expiresMs: T0 + 600_000,
-  nonce: "0011223344556677",
-});
-const accept = makeAccept(offer, {
-  from: payeeDid,
-  statement: hash,
-  nonce: "8899aabbccddeeff",
-});
-const room = dealRoom(accept.contract);
+const lines = [offer.line, accept.line, lock.line, reveal.line, refund.line];
+const honestTimes = [NOW - 1, NOW, NOW + 1, NOW + 1_800_000, offerFields.refundAfterMs + 5_000];
+const honest = lines.map((line, index) => record(line, index, honestTimes[index]));
+const tampered = honest.map((item) => ({ ...item }));
+tampered[3].timestampMs = offerFields.refundAfterMs + 10_000;
 
-const lock = {
-  type: "lock",
-  from: payerDid,
-  contract: accept.contract,
-  rail: "paper",
-  ref: "paper-96",
-};
-const reveal = {
-  type: "reveal",
-  from: payeeDid,
-  contract: accept.contract,
-  ref: "paper-96",
-  secret: `0x${Buffer.from(preimage).toString("hex")}`,
-};
-const refund = {
-  type: "refund",
-  from: payerDid,
-  contract: accept.contract,
-  ref: "paper-96",
-  reason: "deadline",
-};
-
-const lines = [encodeFrame(offer), encodeFrame(accept), encodeFrame(lock), encodeFrame(reveal), encodeFrame(refund)];
-const honestTimes = [T0, T0 + 1_000, T0 + 2_000, T0 + 1_800_000, T0 + 7_205_000];
-const rooms = ["tclk-offers", "tclk-offers", room, room, room];
-const seeds = [PAYER_SEED, PAYEE_SEED, PAYER_SEED, PAYEE_SEED, PAYER_SEED];
-const honest = lines.map((line, i) => signRecord(seeds[i], rooms[i], String(1000 + i), line, i, honestTimes[i]));
-const tampered = honest.map((record) => ({ ...record }));
-tampered[3].timestampMs = T0 + 7_210_000;
-
-for (const record of honest) {
-  if (!verifyTranscriptRecord(record).ok) throw new Error("HONEST_SIGNATURE_DID_NOT_VERIFY");
-}
-for (const record of tampered) {
-  if (!verifyTranscriptRecord(record).ok) throw new Error("TAMPERED_SIGNATURE_DID_NOT_VERIFY");
-}
+if (!honest.every((item) => verifyTranscriptRecord(item).ok)) throw new Error("HONEST_SIGNATURE_DID_NOT_VERIFY");
+if (!tampered.every((item) => verifyTranscriptRecord(item).ok)) throw new Error("TAMPERED_SIGNATURE_DID_NOT_VERIFY");
 
 const honestFold = foldTranscript(honest);
 const tamperedFold = foldTranscript(tampered);
@@ -104,7 +93,7 @@ console.log(JSON.stringify({
   issue: 96,
   upstreamCommit: "5cc4ab93efbc8999a3a7e1471b639deca25998ea",
   allSignaturesValid: true,
-  onlyChangedField: "reveal.timestampMs",
+  changedField: "reveal.timestampMs",
   honest: honestFold.state.status,
   tampered: tamperedFold.state.status,
   result: "REPRODUCED",
