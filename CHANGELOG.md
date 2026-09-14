@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add a pinned TCLK issue #93 adversarial conformance canary for stream completeness / deletion trust: honest `claimed` becomes `refunded` after deleting the signed reveal while every surviving signature remains valid and every fold step remains `ok`; delete+renumber also demonstrates that unsigned `seq` gap checks are diagnostic rather than proof of completeness. Downstream settlement evidence fails closed as `UNTRUSTED_STREAM_COMPLETENESS` without prescribing an upstream normative fix.
 - Incorporate Yellow Paper issue #26 maintainer direction: `StandingOffer` / `SessionOffer` is the current canonical opening-offer boundary, while complete cross-provider quote comparison remains fail-closed pending `flop-core#1597`, `flop-core#1586`, and the E.54 SDK / Appendix F quote contract.
 - Add a reproducible issue #17 client-crash settlement fixture pinned to the maintainer clarification and runtime commit `41d0009a...`: once unilateral settlement is selected, R12.1d applies; crash adds no surcharge; the current 1% audit-pool earmark is carved from `P`; and payout conservation is tested offline.
 - Keep broader E.24 settlement-mode priority explicitly out of scope rather than treating the client-crash clarification as a full E.24 resolution.
