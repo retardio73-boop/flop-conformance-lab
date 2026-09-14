@@ -74,6 +74,24 @@ test("TCLK issue #96 venue-time dependency cannot become verified settlement", (
   assert.throws(() => assertVerifiedSettlement(evidence), /SETTLEMENT_NOT_VERIFIED/);
 });
 
+test("TCLK issue #93 incomplete-stream dependency cannot become verified settlement", () => {
+  const evidence = portableWorkEvidence({
+    ...base,
+    requestBytes: "req",
+    responseBytes: "resp",
+    workProofBytes: "proof",
+    settlementBytes: "tclk-transcript-status:refunded",
+    settlementAmount: "42",
+    settlementAsset: "FLOP",
+    settlementTrust: "UNTRUSTED_STREAM_COMPLETENESS",
+    settlementTrustRef: "https://github.com/flop-labs/tclk/issues/93",
+    transport: { room: "deal-room", generation: 2, seq: 3, availability: "LOCAL_SNAPSHOT" },
+  });
+  assert.equal(evidence.state, "SETTLEMENT_UNVERIFIED");
+  assert.equal(evidence.settlementTrust, "UNTRUSTED_STREAM_COMPLETENESS");
+  assert.throws(() => assertVerifiedSettlement(evidence), /SETTLEMENT_NOT_VERIFIED/);
+});
+
 test("settlement bytes without explicit trust remain unverified", () => {
   const evidence = portableWorkEvidence({
     ...base,
