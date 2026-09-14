@@ -5,6 +5,7 @@ export type SettlementTrustLevel =
   | "NOT_PRESENT"
   | "UNVERIFIED"
   | "UNTRUSTED_VENUE_TIME"
+  | "UNTRUSTED_STREAM_COMPLETENESS"
   | "VERIFIED_RAIL_EVIDENCE";
 
 export type WorkEvidenceState =
