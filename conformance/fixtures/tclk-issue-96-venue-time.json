@@ -1,0 +1,29 @@
+{
+  "id": "tclk.issue-96-venue-time",
+  "normativeStatus": "OPEN_ISSUE",
+  "upstream": {
+    "repository": "https://github.com/flop-labs/tclk",
+    "issue": 96,
+    "commit": "5cc4ab93efbc8999a3a7e1471b639deca25998ea"
+  },
+  "signaturePreimage": {
+    "coveredFields": ["room", "nonce", "text"],
+    "omittedVenueFields": ["seq", "ts"]
+  },
+  "refundAfterMs": 1780007200000,
+  "honest": {
+    "revealTimestampMs": 1780001800000,
+    "expectedTerminalStatus": "claimed",
+    "signedMaterialId": "same-five-signed-records"
+  },
+  "tampered": {
+    "revealTimestampMs": 1780007210000,
+    "expectedTerminalStatus": "refunded",
+    "signedMaterialId": "same-five-signed-records"
+  },
+  "expectedBoundary": {
+    "status": "UNTRUSTED_VENUE_TIME",
+    "failClosed": true,
+    "allowDeadlineVerdict": false
+  }
+}
