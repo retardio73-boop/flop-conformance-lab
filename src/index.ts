@@ -5,6 +5,7 @@ import { runAdversarialEvidenceFixture } from "./adversarial-evidence.js";
 import { validateYellowpaper5657Fixture } from "./yellowpaper-open-issues.js";
 import { validateDemandIndependenceFixture } from "./demand-independence.js";
 import { validateSybilEconomicsFixture } from "./sybil-economics.js";
+import { validateTclkIssue96Fixture } from "./tclk-venue-time.js";
 import type { LabReport } from "./types.js";
 
 export * from "./types.js";
@@ -19,6 +20,7 @@ export * from "./yellowpaper-open-issues.js";
 export * from "./demand-independence.js";
 export * from "./sybil-economics.js";
 export * from "./tclk-provisional-hardening.js";
+export * from "./tclk-venue-time.js";
 export * from "./work-evidence.js";
 export * from "./technocore-recovery.js";
 export * from "./contactability.js";
@@ -46,6 +48,7 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
   const yellowpaper5657 = validateYellowpaper5657Fixture();
   const demandIndependence = validateDemandIndependenceFixture();
   const sybilEconomics = validateSybilEconomicsFixture();
+  const tclkIssue96 = validateTclkIssue96Fixture();
   const d0440Conflict = JSON.parse(
     readFileSync(
       new URL("../conformance/fixtures/flop-d0440-source-conflict.json", import.meta.url),
@@ -68,6 +71,14 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
       normativeStatus: "LOCAL_POLICY" as const,
       durationMs: 0,
       details: adversarialEvidence,
+    },
+    {
+      id: "tclk.issue-96-venue-time",
+      suite: "tclk",
+      status: "PASS" as const,
+      normativeStatus: "OPEN_ISSUE" as const,
+      durationMs: 0,
+      details: tclkIssue96,
     },
     {
       id: "flop.quote-open-channel-receipt",
