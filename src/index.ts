@@ -6,6 +6,7 @@ import { validateYellowpaper5657Fixture } from "./yellowpaper-open-issues.js";
 import { validateDemandIndependenceFixture } from "./demand-independence.js";
 import { validateSybilEconomicsFixture } from "./sybil-economics.js";
 import { validateTclkIssue96Fixture } from "./tclk-venue-time.js";
+import { validateClientCrashSettlementFixture } from "./client-crash-settlement.js";
 import type { LabReport } from "./types.js";
 
 export * from "./types.js";
@@ -24,6 +25,7 @@ export * from "./tclk-venue-time.js";
 export * from "./work-evidence.js";
 export * from "./technocore-recovery.js";
 export * from "./contactability.js";
+export * from "./client-crash-settlement.js";
 export * from "./sonnet.js";
 export * from "./sonnet-discussion.js";
 export * from "./sonnet-planning.js";
@@ -49,6 +51,7 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
   const demandIndependence = validateDemandIndependenceFixture();
   const sybilEconomics = validateSybilEconomicsFixture();
   const tclkIssue96 = validateTclkIssue96Fixture();
+  const clientCrashSettlement = validateClientCrashSettlementFixture();
   const d0440Conflict = JSON.parse(
     readFileSync(
       new URL("../conformance/fixtures/flop-d0440-source-conflict.json", import.meta.url),
@@ -87,6 +90,14 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
       normativeStatus: "TARGET_SPEC" as const,
       durationMs: 0,
       details: quoteFixture,
+    },
+    {
+      id: "flop.client-crash-r12.1d-settlement",
+      suite: "flop",
+      status: "PASS" as const,
+      normativeStatus: "TARGET_SPEC" as const,
+      durationMs: 0,
+      details: clientCrashSettlement,
     },
     {
       id: "flop.yellowpaper-56-57-boundaries",
