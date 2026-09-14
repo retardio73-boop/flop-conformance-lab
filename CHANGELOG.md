@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Incorporate Yellow Paper issue #26 maintainer direction: `StandingOffer` / `SessionOffer` is the current canonical opening-offer boundary, while complete cross-provider quote comparison remains fail-closed pending `flop-core#1597`, `flop-core#1586`, and the E.54 SDK / Appendix F quote contract.
+- Add a reproducible issue #17 client-crash settlement fixture pinned to the maintainer clarification and runtime commit `41d0009a...`: once unilateral settlement is selected, R12.1d applies; crash adds no surcharge; the current 1% audit-pool earmark is carved from `P`; and payout conservation is tested offline.
+- Keep broader E.24 settlement-mode priority explicitly out of scope rather than treating the client-crash clarification as a full E.24 resolution.
+
 ## 0.1.4-alpha - 2026-09-11
 
 - Add the public `quote -> open_channel -> receipt` boundary fixture motivated by Yellow Paper issue #26; unspecified quote/discovery and pay-unit mappings remain explicitly fail-closed.
