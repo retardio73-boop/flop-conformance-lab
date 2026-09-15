@@ -9,7 +9,7 @@ import {
 } from "../src/sonnet-planning.js";
 import {
   assertFreshWordProposal, assertMatchingRosterConsents, assertRosterReadyBeforeWord,
-  beginIdempotentRequest, transitionContestState, verifyRefereeRecord, type ContestState,
+  beginIdempotentRequest, evaluateRosterAuthority, transitionContestState, verifyRefereeRecord, type ContestState,
 } from "../src/sonnet-state.js";
 import {canonicalSonnetJson, SONNET_CONTEST_ID, SONNET_REFEREE_DID, SONNET_WRITER_DID, validateSonnetAction} from "../src/sonnet.js";
 
@@ -65,3 +65,19 @@ const base:ContestState={state:"ROSTER_PENDING",evidence:[],request_ids:{},game_
 test("roster mismatch and first-word freeze protections fail closed",()=>{const members=base.roster!;const common={contest_id:SONNET_CONTEST_ID,game_id:"a",poem_room:"d-sonnet-2-team-a",room_generation:1,members};const consents=members.map(did=>({did,...common}));assert.deepEqual(assertMatchingRosterConsents(consents),members);assert.throws(()=>assertMatchingRosterConsents(consents.map((x,i)=>i===3?{...x,members:[...members].reverse()}:x)),/ROSTER_MISMATCH/);assert.throws(()=>assertRosterReadyBeforeWord(base),/WORD_BEFORE_ROSTER_READY/);assert.equal(transitionContestState(base,"RECRUITING","withdrawal accepted").state,"RECRUITING");const writing={...base,state:"WRITING" as const};assert.throws(()=>transitionContestState(writing,"RECRUITING","late withdrawal"),/INVALID_CONTEST_STATE/);});
 test("stale word proposals and changed refreshed state are rejected",()=>{const ready={...base,state:"ROSTER_READY" as const};const proposal={game_id:"a",room_generation:1,version:0,previous_state_hash:"a".repeat(64)};assert.doesNotThrow(()=>assertFreshWordProposal(ready,proposal,{...ready}));assert.throws(()=>assertFreshWordProposal(ready,proposal,{...ready,version:1}),/STALE_WORD/);});
 test("request retries are identical across restart and referee DID is pinned",()=>{const payload={type:"sonnet.submit.v1",contest_id:SONNET_CONTEST_ID,request_id:"submit-1"};const persisted=beginIdempotentRequest(undefined,payload);assert.equal(beginIdempotentRequest(persisted,{...payload}),persisted);assert.throws(()=>beginIdempotentRequest(persisted,{...payload,extra:true}),/RETRY_CONFLICT/);const receipt={type:"sonnet.receipt.v1",contest_id:SONNET_CONTEST_ID,request_id:"submit-1",status:"accepted"};assert.equal(verifyRefereeRecord({from:SONNET_REFEREE_DID,text:JSON.stringify(receipt)},"submit-1").status,"accepted");assert.throws(()=>verifyRefereeRecord({from:peer,text:JSON.stringify(receipt)}),/WRONG_SONNET_REFEREE/);});
+
+test("visible roster posts cannot mutate state without a matching accepted receipt",()=>{
+  const observation={contest_id:SONNET_CONTEST_ID,signer:peer,request_id:"roster-1",canonical:"{\"members\":[]}"};
+  assert.deepEqual(evaluateRosterAuthority(observation,undefined),{state:"PENDING_OR_REPLAY",shouldMutate:false});
+  const wrong={...observation,request_id:"roster-other",status:"accepted" as const,receipt_seq:100};
+  assert.deepEqual(evaluateRosterAuthority(observation,wrong),{state:"PENDING_OR_REPLAY",shouldMutate:false});
+  const accepted={...observation,status:"accepted" as const,receipt_seq:101};
+  assert.deepEqual(evaluateRosterAuthority(observation,accepted),{state:"AUTHORITATIVE_ACCEPTED",shouldMutate:true,receiptSeq:101});
+});
+
+test("replayed accepted roster cannot trigger a second rebuild or withdrawal",()=>{
+  const observation={contest_id:SONNET_CONTEST_ID,signer:peer,request_id:"roster-2",canonical:"{\"members\":[\"a\"]}"};
+  const accepted={...observation,status:"accepted" as const,receipt_seq:202};
+  assert.deepEqual(evaluateRosterAuthority(observation,accepted,202),{state:"AUTHORITATIVE_REPLAY",shouldMutate:false,receiptSeq:202});
+  assert.deepEqual(evaluateRosterAuthority(observation,accepted,203),{state:"AUTHORITATIVE_REPLAY",shouldMutate:false,receiptSeq:202});
+});
