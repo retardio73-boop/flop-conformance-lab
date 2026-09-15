@@ -3,15 +3,18 @@ import { coreSuites, routerSuite } from "./suites.js";
 import { validateQuoteChannelReceiptFixture } from "./flop-quote-boundary.js";
 import { runAdversarialEvidenceFixture } from "./adversarial-evidence.js";
 import { validateYellowpaper5657Fixture } from "./yellowpaper-open-issues.js";
+import { validateYellowpaper61Fixture } from "./yellowpaper-61.js";
 import { validateDemandIndependenceFixture } from "./demand-independence.js";
 import { validateSybilEconomicsFixture } from "./sybil-economics.js";
 import { validateTclkIssue93Fixture } from "./tclk-stream-completeness.js";
 import { validateTclkIssue96Fixture } from "./tclk-venue-time.js";
 import { validateClientCrashSettlementFixture } from "./client-crash-settlement.js";
+import { validateContributionProof851Populations } from "./technocore-contribution-proof.js";
 import type { LabReport } from "./types.js";
 
 export * from "./types.js";
 export * from "./technocore.js";
+export * from "./technocore-contribution-proof.js";
 export * from "./boundary.js";
 export * from "./signing.js";
 export * from "./protocol-ids.js";
@@ -19,6 +22,7 @@ export * from "./differential.js";
 export * from "./flop-quote-boundary.js";
 export * from "./adversarial-evidence.js";
 export * from "./yellowpaper-open-issues.js";
+export * from "./yellowpaper-61.js";
 export * from "./demand-independence.js";
 export * from "./sybil-economics.js";
 export * from "./tclk-provisional-hardening.js";
@@ -50,11 +54,13 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
   const quoteFixture = validateQuoteChannelReceiptFixture();
   const adversarialEvidence = runAdversarialEvidenceFixture();
   const yellowpaper5657 = validateYellowpaper5657Fixture();
+  const yellowpaper61 = validateYellowpaper61Fixture();
   const demandIndependence = validateDemandIndependenceFixture();
   const sybilEconomics = validateSybilEconomicsFixture();
   const tclkIssue93 = validateTclkIssue93Fixture();
   const tclkIssue96 = validateTclkIssue96Fixture();
   const clientCrashSettlement = validateClientCrashSettlementFixture();
+  const technocore851 = validateContributionProof851Populations();
   const d0440Conflict = JSON.parse(
     readFileSync(
       new URL("../conformance/fixtures/flop-d0440-source-conflict.json", import.meta.url),
@@ -119,6 +125,14 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
       details: yellowpaper5657,
     },
     {
+      id: "flop.yellowpaper-61-direct-rail-hash-reportdata-conflict",
+      suite: "flop",
+      status: "PASS" as const,
+      normativeStatus: "OPEN_ISSUE" as const,
+      durationMs: 0,
+      details: yellowpaper61,
+    },
+    {
       id: "flop.e49-demand-independence",
       suite: "flop",
       status: "PASS" as const,
@@ -149,6 +163,14 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
       normativeStatus: "PROVISIONAL_PR" as const,
       durationMs: 0,
       details: technocore842,
+    },
+    {
+      id: "technocore.pr851-deployed-canonicalization-populations",
+      suite: "technocore",
+      status: "PASS" as const,
+      normativeStatus: "PROVISIONAL_PR" as const,
+      durationMs: 0,
+      details: technocore851,
     },
   ];
 
