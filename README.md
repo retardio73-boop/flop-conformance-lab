@@ -66,6 +66,10 @@ The suite distinguishes:
 
 See [`docs/adversarial-evidence-suite-v1.md`](docs/adversarial-evidence-suite-v1.md).
 
+## Ecosystem interoperability
+
+`conformance/fixtures/ecosystem-interop-v1.json` pins community projects used as vector, receipt, transport, observability, security, discovery, or downstream integration references. Community behavior is never promoted to FLOP/TCLK normative status by inclusion. TCR-1 receipts may be adapted into `flop.work-evidence.v1` only after cryptographic and artifact verification; allocation credit remains `NOT_DERIVED`.
+
 ## Run
 
 ```powershell

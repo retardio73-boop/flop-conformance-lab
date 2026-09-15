@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.1.5-alpha - 2026-09-15
+
+- Add a non-normative ecosystem interoperability registry with pinned community sources and explicit reuse strategies.
+- Add a fail-closed TCR-1 adapter into `flop.work-evidence.v1`; verified task completion remains distinct from settlement and allocation credit.
+- Add ambiguous Technocore write reconciliation semantics: fixed logical bytes, exact DID+nonce readback, and no blind retry.
+- Update the D-0440 canary: the normative FLOP web publication reflects 4.4B/D-0440 while the GitHub Yellow Paper mirror remains stale.
+- Include Sonnet receipt-authoritative roster replay hardening, Yellow Paper #61, Technocore PR #851 deployed populations, and TCLK #152 contactability evidence from current main.
+
 - Add a pinned TCLK issue #93 adversarial conformance canary for stream completeness / deletion trust: honest `claimed` becomes `refunded` after deleting the signed reveal while every surviving signature remains valid and every fold step remains `ok`; delete+renumber also demonstrates that unsigned `seq` gap checks are diagnostic rather than proof of completeness. Downstream settlement evidence fails closed as `UNTRUSTED_STREAM_COMPLETENESS` without prescribing an upstream normative fix.
 - Incorporate Yellow Paper issue #26 maintainer direction: `StandingOffer` / `SessionOffer` is the current canonical opening-offer boundary, while complete cross-provider quote comparison remains fail-closed pending `flop-core#1597`, `flop-core#1586`, and the E.54 SDK / Appendix F quote contract.
 - Add a reproducible issue #17 client-crash settlement fixture pinned to the maintainer clarification and runtime commit `41d0009a...`: once unilateral settlement is selected, R12.1d applies; crash adds no surcharge; the current 1% audit-pool earmark is carved from `P`; and payout conservation is tested offline.

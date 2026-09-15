@@ -1,7 +1,7 @@
 {
   "schema": "flop.spec-source-conflict.v1",
-  "classification": "OFFICIAL_SOURCE_CONFLICT",
-  "observedAt": "2026-09-13",
+  "classification": "NORMATIVE_WEB_RESOLVED_GITHUB_MIRROR_STALE",
+  "observedAt": "2026-09-15",
   "subject": "genesis supply and cohort allocation",
   "sources": [
     {
@@ -9,12 +9,12 @@
       "url": "https://flop.finance/intro/yellowpaper/",
       "role": "normative-spec-publication",
       "observed": {
-        "genesis_supply": "3500000000",
+        "genesis_supply": "4400000000",
         "genesis_miner_airdrop": "1200000000",
-        "genesis_validator_airdrop": "305505000",
+        "genesis_validator_airdrop": "1200000000",
         "genesis_agent_airdrop": "1200000000",
-        "genesis_reserve": "794495000",
-        "decision": "D-0438/D-0435"
+        "genesis_reserve": "800000000",
+        "decision": "D-0440"
       }
     },
     {
@@ -54,7 +54,7 @@
   ],
   "policy": {
     "normativePromotion": "FAIL_CLOSED",
-    "reason": "Official materials disagree on consensus-sensitive genesis parameters.",
+    "reason": "Normative FLOP web publication now reflects D-0440, while the public GitHub Yellow Paper mirror remains stale; cross-source convergence is therefore incomplete.",
     "agentAllocationPoolObservedAcrossBoth": "1200000000",
     "agentAllocationMechanism": "UNRESOLVED",
     "allocationCreditFromLocalReceipts": "NOT_DERIVED"
