@@ -167,7 +167,8 @@ export function validateYellowpaper61Fixture(): Record<string, unknown> {
   assert(reportData.length === report.expectedLengthBytes, "ISSUE_61_REPORT_DATA_LENGTH_DIVERGENCE");
   assert(reportData.toString("hex") === report.expectedReportDataHex, "ISSUE_61_REPORT_DATA_VECTOR_DIVERGENCE");
   assert(report.section11DescribedLengthBytes === 32, "ISSUE_61_SECTION11_LENGTH_BASELINE_DIVERGENCE");
-  assert(report.section11DescribedLengthBytes !== report.expectedLengthBytes, "ISSUE_61_LENGTH_CONFLICT_NOT_REPRODUCED");
+  const reportLengthConflict = Number(report.section11DescribedLengthBytes) !== Number(report.expectedLengthBytes);
+  assert(reportLengthConflict, "ISSUE_61_LENGTH_CONFLICT_NOT_REPRODUCED");
 
   assert(!fixture.scope.networkMutation, "ISSUE_61_FIXTURE_MUST_BE_OFFLINE");
   assert(!fixture.scope.liveValidation, "ISSUE_61_FIXTURE_MUST_NOT_CLAIM_LIVE_VALIDATION");
