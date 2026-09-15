@@ -33,6 +33,13 @@
       "upstreamDecision": null,
       "fixture": "yellowpaper-56-57-v0.5.0.json",
       "next": "WAIT_FOR_WORDING_OR_CONSTRUCTION_RESOLUTION_THEN_REPLAY"
+    },
+    "61": {
+      "before": "SECTION_1_1_TASK_HASH_AND_REPORT_DATA_CONFLICT_WITH_APPENDIX_F1_AND_WIRE_CORPUS",
+      "current": "OPEN_ISSUE_FAIL_CLOSED_WITH_DIRECT_RAIL_VECTOR",
+      "upstreamDecision": null,
+      "fixture": "yellowpaper-61-direct-rail-v0.5.0.json",
+      "next": "WAIT_FOR_SECTION_1_1_R6_5E_AND_APPENDIX_F1_RECONCILIATION_THEN_REPLAY"
     }
   }
 }
