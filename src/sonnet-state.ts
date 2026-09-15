@@ -9,3 +9,35 @@ export function assertRosterReadyBeforeWord(state: ContestState): void { if(stat
 export function assertFreshWordProposal(state: ContestState, proposal:{game_id:string;room_generation:number;version:number;previous_state_hash:string}, refreshed:ContestState):void { assertRosterReadyBeforeWord(refreshed); if(proposal.game_id!==refreshed.game_id||proposal.room_generation!==refreshed.room_generation||proposal.version!==refreshed.version||proposal.previous_state_hash!==refreshed.state_hash)throw new Error("STALE_WORD_PROPOSAL"); if(canonicalSonnetJson(state)!==canonicalSonnetJson(refreshed))throw new Error("STATE_CHANGED_BEFORE_WORD"); }
 export function verifyRefereeRecord(record:{from:string;text:string}, expectedRequestId?:string):Record<string,unknown>{if(record.from!==SONNET_REFEREE_DID)throw new Error("WRONG_SONNET_REFEREE");const payload=JSON.parse(record.text)as Record<string,unknown>;if(payload.type!=="sonnet.receipt.v1"||payload.contest_id!==SONNET_CONTEST_ID)throw new Error("INVALID_REFEREE_RECEIPT");if(expectedRequestId&&payload.request_id!==expectedRequestId)throw new Error("REFEREE_REQUEST_ID_MISMATCH");return payload;}
 export function beginIdempotentRequest(existing:{request_id:string;canonical:string}|undefined,payload:Record<string,unknown>):{request_id:string;canonical:string}{const requestId=payload.request_id;if(typeof requestId!=="string"||requestId.length===0)throw new Error("INVALID_REQUEST_ID");const candidate={request_id:requestId,canonical:canonicalSonnetJson(payload)};if(!existing)return candidate;if(existing.request_id!==requestId||existing.canonical!==candidate.canonical)throw new Error("REQUEST_ID_RETRY_CONFLICT");return existing;}
+
+export type RosterObservation = {contest_id:string; signer:string; request_id:string; canonical:string};
+export type AcceptedRosterReceipt = RosterObservation & {status:"accepted"; receipt_seq:number};
+export type RosterAuthorityEvaluation = {
+  state:"PENDING_OR_REPLAY"|"AUTHORITATIVE_ACCEPTED"|"AUTHORITATIVE_REPLAY";
+  shouldMutate:boolean;
+  receiptSeq?:number;
+};
+
+/**
+ * A visible roster post is not authoritative by itself. Only a matching accepted
+ * referee receipt can advance local state. Re-observing the same request after
+ * its accepted receipt was already applied is a replay and must not trigger a
+ * rebuild, withdrawal, or any other state mutation.
+ */
+export function evaluateRosterAuthority(
+  observation:RosterObservation,
+  receipt:AcceptedRosterReceipt|undefined,
+  lastAppliedReceiptSeq?:number,
+):RosterAuthorityEvaluation {
+  if(observation.contest_id!==SONNET_CONTEST_ID)throw new Error("INVALID_ROSTER_CONTEST");
+  if(!observation.signer||!observation.request_id||!observation.canonical)throw new Error("INCOMPLETE_ROSTER_OBSERVATION");
+  if(!receipt)return {state:"PENDING_OR_REPLAY",shouldMutate:false};
+  if(receipt.status!=="accepted"||!Number.isSafeInteger(receipt.receipt_seq)||receipt.receipt_seq<0)throw new Error("INVALID_ACCEPTED_ROSTER_RECEIPT");
+  const sameTuple=receipt.contest_id===observation.contest_id&&receipt.signer===observation.signer&&receipt.request_id===observation.request_id;
+  if(!sameTuple||receipt.canonical!==observation.canonical)return {state:"PENDING_OR_REPLAY",shouldMutate:false};
+  if(lastAppliedReceiptSeq!==undefined){
+    if(!Number.isSafeInteger(lastAppliedReceiptSeq)||lastAppliedReceiptSeq<0)throw new Error("INVALID_LAST_APPLIED_RECEIPT_SEQ");
+    if(receipt.receipt_seq<=lastAppliedReceiptSeq)return {state:"AUTHORITATIVE_REPLAY",shouldMutate:false,receiptSeq:receipt.receipt_seq};
+  }
+  return {state:"AUTHORITATIVE_ACCEPTED",shouldMutate:true,receiptSeq:receipt.receipt_seq};
+}
