@@ -22,6 +22,7 @@ The primary portable artifact is `flop-conformance-result/v1`. A result is evide
 - Five-minute integration: `docs/external-integration.md`
 - Discovery pointer format: `docs/discovery-manifest.md`
 - External adoption registry: `adoption/registry.json`
+- HTLC conformance lane: `docs/HTLC_CONFORMANCE.md`
 
 ## Reference implementation relationship
 

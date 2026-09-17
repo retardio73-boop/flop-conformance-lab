@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add an offline HTLC conformance lane covering §10 local atomicity, resolved R10.2 `>=`, R10.5 max-lock/actual-settlement conservation, tclk/2 preview binding, pre-reservation rejection, replay/idempotence, no-secret-custody, and E.48 pending evidence-shape checks.
+
 ## 0.1.5-alpha - 2026-09-15
 
 - Add a non-normative ecosystem interoperability registry with pinned community sources and explicit reuse strategies.
