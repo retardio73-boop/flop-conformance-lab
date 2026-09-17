@@ -7,6 +7,8 @@ export const TCLK2_PR58_HEAD = "7b299a8bfd6ed70d6a7bd8b7852998d292100a37";
 export const YELLOWPAPER_HTLC_VERSION = "0.5.0-draft";
 export const R102_COMPARATOR_ISSUE = 5;
 
+const HTLC_PAIR_FIXTURE_URL = new URL("../conformance/fixtures/htlc-pair-fixtures-v1.json", import.meta.url);
+
 const HTLC_FIXTURE_URL = new URL("../conformance/fixtures/htlc-conformance-v0.5.0.json", import.meta.url);
 
 function assert(condition: unknown, message: string): asserts condition {
@@ -361,6 +363,42 @@ export function derivePreviewSettlementState(
   };
 }
 
+export type PairFamily = "FLOP_EVM" | "FLOP_BTC";
+
+export interface ExperimentalPairProfile {
+  id: string;
+  family: PairFamily;
+  status: "EXPERIMENTAL_PENDING_E48";
+  flopChainId: string;
+  counterChainId: string;
+  flopAssetId: string;
+  counterAssetId: string;
+  preimageOwner: "COUNTER_PAYEE";
+  timeoutOrientation: "FLOP_LONGER_THAN_COUNTER";
+  flopTimeoutSeconds: number;
+  counterTimeoutSeconds: number;
+  minMarginSeconds: number;
+  counterFinalityRule: string;
+  timelyInclusionAssumption: string;
+  relayerRecovery: string;
+  feeInclusionPremise: "OPEN_E48";
+  currentFinalityLag: "UNRESOLVED_YP_16";
+}
+
+export function validateExperimentalPairProfile(profile: ExperimentalPairProfile): true {
+  assert(profile.id.length > 0, "E48_PAIR_ID_REQUIRED");
+  assert(profile.status === "EXPERIMENTAL_PENDING_E48", "E48_PAIR_STATUS_INVALID");
+  assert(profile.flopChainId !== profile.counterChainId, "E48_PAIR_MUST_BE_CROSS_CHAIN");
+  assert(profile.flopTimeoutSeconds > profile.counterTimeoutSeconds, "E48_TIMEOUT_ORIENTATION_INVALID");
+  assert(profile.flopTimeoutSeconds - profile.counterTimeoutSeconds >= profile.minMarginSeconds, "E48_TIMEOUT_MARGIN_INSUFFICIENT");
+  assert(profile.counterFinalityRule.length > 0, "E48_COUNTER_FINALITY_REQUIRED");
+  assert(profile.timelyInclusionAssumption.length > 0, "E48_TIMELY_INCLUSION_REQUIRED");
+  assert(profile.relayerRecovery.length > 0, "E48_RELAYER_RECOVERY_REQUIRED");
+  assert(profile.feeInclusionPremise === "OPEN_E48", "E48_FEE_PREMISE_MUST_REMAIN_OPEN");
+  assert(profile.currentFinalityLag === "UNRESOLVED_YP_16", "E48_FINALITY_LAG_MUST_REMAIN_UNRESOLVED");
+  return true;
+}
+
 export interface PairLegEvidence {
   leg: "FLOP" | "COUNTER";
   chainId: string;
@@ -493,3 +531,14 @@ export function validateHtlcConformanceFixture(): Record<string, unknown> {
   };
 }
 
+
+export function validateExperimentalPairFixtures(): Record<string, unknown> {
+  const fixture = JSON.parse(readFileSync(HTLC_PAIR_FIXTURE_URL, "utf8")) as { schema:string; classification:string; e48:string; realFunds:boolean; networkMutation:boolean; pairs:ExperimentalPairProfile[] };
+  assert(fixture.schema === "flop.htlc-pair-fixtures.v1", "E48_PAIR_FIXTURE_SCHEMA_DIVERGENCE");
+  assert(fixture.classification === "LOCAL_EXPERIMENTAL", "E48_PAIR_FIXTURE_CLASSIFICATION_DIVERGENCE");
+  assert(fixture.e48 === "PENDING", "E48_PAIR_FIXTURE_MUST_REMAIN_PENDING");
+  assert(fixture.realFunds === false && fixture.networkMutation === false, "E48_PAIR_FIXTURE_MUST_BE_OFFLINE");
+  assert(fixture.pairs.length === 2, "E48_PAIR_FIXTURE_COUNT_DIVERGENCE");
+  for (const pair of fixture.pairs) validateExperimentalPairProfile(pair);
+  return { schema:fixture.schema, pairs:fixture.pairs.map((p)=>p.id), e48:"PENDING_E48", claimEndToEndConforming:false, realFunds:false };
+}

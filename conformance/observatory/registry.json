@@ -11,7 +11,8 @@
         "flop.quote-open-channel-receipt",
         "flop.yellowpaper-56-57-boundaries",
         "flop.direct-rail-f1-cross-language",
-        "flop.htlc-conformance-v1"
+        "flop.htlc-conformance-v1",
+        "flop.htlc-pair-fixtures-v1"
       ]
     },
     {
@@ -70,7 +71,8 @@
       "repository": "flop-labs/yellowpaper",
       "issue": 5,
       "affects": [
-        "flop.htlc-conformance-v1"
+        "flop.htlc-conformance-v1",
+        "flop.htlc-pair-fixtures-v1"
       ]
     },
     {
@@ -89,6 +91,24 @@
       "pr": 58,
       "affects": [
         "flop.htlc-conformance-v1"
+      ]
+    },
+    {
+      "id": "yellowpaper-issue-16",
+      "kind": "github-issue",
+      "repository": "flop-labs/yellowpaper",
+      "issue": 16,
+      "affects": [
+        "flop.htlc-pair-fixtures-v1"
+      ]
+    },
+    {
+      "id": "yellowpaper-issue-51",
+      "kind": "github-issue",
+      "repository": "flop-labs/yellowpaper",
+      "issue": 51,
+      "affects": [
+        "flop.htlc-pair-fixtures-v1"
       ]
     }
   ]
