@@ -42,6 +42,7 @@ On Windows, the optional productive signer is loaded from a CurrentUser DPAPI cr
 - `integration`: signed-transport identity must match the TCLK frame party; protocol-valid and transport-representable values remain distinct.
 - `evidence`: adversarial trust-boundary fixtures for world-writable room content, transcript completeness/order, unauthenticated venue time, settlement confidence, mailbox reachability and lossless transport nonces.
 - `router`: optional adapter conformance against a built Session Router module.
+- `htlc`: offline §10/TCLK settlement-boundary conformance with R10.2, R10.5, provisional tclk/2 observations, and E.48 kept pending. See [`docs/HTLC_CONFORMANCE.md`](docs/HTLC_CONFORMANCE.md).
 - `flop`: target-spec reporting only while an authoritative public runtime adapter is unavailable; E.51 wire closure remains explicitly unresolved.
 
 `RELEASE_CONFORMANCE` is active against pinned `@flop-labs/tclk@0.1.0` vectors. `UPSTREAM_CONFORMANCE` is `MANIFEST_ONLY`: exact upstream SHAs are recorded but no second behavioral lane is claimed. `TARGET_SPEC_CONFORMANCE` is active for explicit target semantics. `LIVE_CONFORMANCE` is `PUBLIC_RUNTIME_UNAVAILABLE`. Open pull requests and issues are provisional, never silently normative.
