@@ -1,6 +1,6 @@
 {
   "schema": "flop.ecosystem-interop.v1",
-  "observedAt": "2026-09-15",
+  "observedAt": "2026-09-16",
   "policy": {
     "communityProjectsAreNormative": false,
     "copyImplementationsByDefault": false,
@@ -111,6 +111,18 @@
       ],
       "strategy": "reuse-observability-semantics-not-ui",
       "commit": "93fd6d839a8a29d05a3c32a5e94a8c6a31170380"
+    },
+    {
+      "repo": "osr21/flop-protocol-reproducibility-audits",
+      "commit": "f701db3a211746b65747d69f1e480d8e4500cfb9",
+      "classification": "INDEPENDENT_CONFORMANCE_REFERENCE",
+      "reuse": [
+        "F.1-task-hash",
+        "F.1-report-data",
+        "legacy-negative-vectors",
+        "public-release-scan"
+      ],
+      "strategy": "pin-independent-cross-language-evidence"
     }
   ]
 }

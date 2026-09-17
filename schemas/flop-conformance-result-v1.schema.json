@@ -1,4 +1,4 @@
-{
+﻿{
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/retardio73-boop/flop-conformance-lab/schemas/flop-conformance-result-v1.schema.json",
   "title": "FLOP Conformance Portable Result v1",
@@ -7,7 +7,7 @@
   "required": ["schema", "profile", "profileVersion", "labVersion", "generatedAt", "result", "summary", "checks"],
   "properties": {
     "schema": { "const": "flop-conformance-result/v1" },
-    "profile": { "enum": ["tclk-transcript", "technocore-agent"] },
+    "profile": { "enum": ["tclk-transcript", "technocore-agent", "flop-market-adapter", "direct-rail-f1"] },
     "profileVersion": { "const": "1" },
     "labVersion": { "type": "string", "minLength": 1 },
     "generatedAt": { "type": "string", "format": "date-time" },
