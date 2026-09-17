@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import path from 'node:path';
 
 const [did, mailbox, recordsPath = 'evidence/technocore-records.json', out = 'evidence/flop-technocore-agent.json'] = process.argv.slice(2);
 if (!did || !mailbox) {
@@ -26,6 +27,6 @@ const evidence = {
   requireComplete: false,
   records,
 };
-fs.mkdirSync(new URL('.', `file://${process.cwd().replaceAll('\\','/')}/${out}`).pathname.replace(/\/[^/]*$/, ''), { recursive: true });
+fs.mkdirSync(path.dirname(out), { recursive: true });
 fs.writeFileSync(out, JSON.stringify(evidence, null, 2) + '\n');
 console.log(out);
