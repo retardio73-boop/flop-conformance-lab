@@ -23,7 +23,7 @@ If you only need to prove or inspect interoperability, **do not adopt the full L
 
 The output schema is `flop-conformance-result/v1`. `PASS` means the supplied evidence passed that profile; `PARTIAL` tells you which evidence is still missing; `FAIL` is a hard failure for the supplied evidence. The Action also exposes `result` and `report` outputs.
 
-Automated agents should start at [`AGENTS.md`](AGENTS.md). Humans can use the [five-minute integration guide](docs/external-integration.md). External implementations with reproducible evidence can [submit it through the issue form](../../issues/new?template=conformance-evidence.yml); verified external CI use is tracked separately from candidates/proposals in the [adoption registry](adoption/README.md).
+Automated agents should start at [`AGENTS.md`](AGENTS.md). Humans can start with the [60-second integration path](docs/INTEGRATE_60_SECONDS.md), then use the [full integration guide](docs/external-integration.md). The current v1 integration surface is temporarily frozen under [`docs/API_STABILITY.md`](docs/API_STABILITY.md). External implementations with reproducible evidence can [submit it through the issue form](../../issues/new?template=conformance-evidence.yml); verified external CI use is tracked separately from candidates/proposals in the [adoption matrix](adoption/MATRIX.md) and registry.
 
 A downstream repo may also publish `.well-known/flop-conformance.json` as a discovery pointer; see the [discovery manifest](docs/discovery-manifest.md). The pointer itself is never proof.
 
@@ -106,7 +106,7 @@ The portable output schema is `flop-conformance-result/v1`. `PASS`, `PARTIAL`, a
 
 `direct-rail-f1` is a release gate for Appendix F.1 bytes and negative legacy cases. While Yellow Paper #61 remains open it returns `PARTIAL` even when byte-level checks pass, so vector agreement is never misrepresented as normative resolution.
 
-A reusable root `action.yml` provides the same interface for GitHub Actions. Consumers should pin an immutable release tag or commit and retain `conformance-report.json` as CI evidence. See [`docs/external-integration.md`](docs/external-integration.md) and [`schemas/flop-conformance-result-v1.schema.json`](schemas/flop-conformance-result-v1.schema.json).
+A reusable root `action.yml` provides the same interface for GitHub Actions. Consumers should pin an immutable release tag or commit and retain `conformance-report.json` as CI evidence. See [`docs/external-integration.md`](docs/external-integration.md) and [`schemas/flop-conformance-result-v1.schema.json`](schemas/flop-conformance-result-v1.schema.json). Ready-to-apply external adapter/workflow bundles live under [`integrations/external/`](integrations/external/), and three bounded public reproductions are indexed in [`docs/REPRODUCIBLE_DEMOS.md`](docs/REPRODUCIBLE_DEMOS.md).
 
 ## Normative classifications
 

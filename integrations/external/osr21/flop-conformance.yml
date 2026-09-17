@@ -1,0 +1,25 @@
+name: flop-conformance
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'client-conformance/**'
+jobs:
+  direct-rail-f1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python tools/build-direct-rail-input.py
+      - id: conformance
+        uses: retardio73-boop/flop-conformance-lab@4a06a5cb73a588180c58ecb1868b2c57dc7ab55c
+        with:
+          profile: direct-rail-f1
+          input: evidence/flop-direct-rail-f1.json
+          out: conformance-report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flop-conformance
+          path: conformance-report.json

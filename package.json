@@ -26,7 +26,11 @@
     "NOTICE",
     "CHANGELOG.md",
     "docs/HTLC_PAIR_FIXTURES.md",
-    "docs/HTLC_REPLAY_HARDENING.md"
+    "docs/HTLC_REPLAY_HARDENING.md",
+    "docs/API_STABILITY.md",
+    "docs/INTEGRATE_60_SECONDS.md",
+    "docs/REPRODUCIBLE_DEMOS.md",
+    "integrations/external"
   ],
   "engines": {
     "node": ">=22.13"
