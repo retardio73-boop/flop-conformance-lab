@@ -1,6 +1,6 @@
 {
   "name": "@flop-tools/conformance-lab",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Cross-system conformance testing for FLOP, TCLK, Technocore and routing implementations.",
   "type": "module",
   "bin": {
@@ -25,7 +25,8 @@
     "SECURITY.md",
     "NOTICE",
     "CHANGELOG.md",
-    "docs/HTLC_PAIR_FIXTURES.md"
+    "docs/HTLC_PAIR_FIXTURES.md",
+    "docs/HTLC_REPLAY_HARDENING.md"
   ],
   "engines": {
     "node": ">=22.13"
