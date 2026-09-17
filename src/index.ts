@@ -47,6 +47,7 @@ export * from "./sonnet-state.js";
 export * from "./profiles.js";
 export * from "./direct-rail-f1.js";
 export * from "./protocol-drift.js";
+export * from "./drift-handoff.js";
 export * from "./reference-journey.js";
 export * from "./agent-economic-profile.js";
 export * from "./reputation-evidence.js";
