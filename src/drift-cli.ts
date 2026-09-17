@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { diffDriftSnapshots, loadDriftRegistry, snapshotProtocolDrift, type DriftSnapshot } from "./protocol-drift.js";
+import { makeDriftHandoff } from "./drift-handoff.js";
 
 const args = process.argv.slice(2);
 const flag = (name: string): string | undefined => {
@@ -22,9 +23,11 @@ if (previousPath && existsSync(previousPath)) {
 const events = diffDriftSnapshots(loadDriftRegistry(), previous, current);
 const out = flag("--out");
 const eventsOut = flag("--events");
+const handoffOut = flag("--handoff");
 if (out) writeFileSync(out, `${JSON.stringify(current, null, 2)}\n`);
 else process.stdout.write(`${JSON.stringify(current, null, 2)}\n`);
 if (eventsOut) writeFileSync(eventsOut, `${JSON.stringify({ schema: "flop.protocol-drift-events.v1", events }, null, 2)}\n`);
+if (handoffOut) writeFileSync(handoffOut, `${JSON.stringify(makeDriftHandoff(events), null, 2)}\n`);
 if (events.length > 0) {
   for (const event of events) {
     process.stderr.write(`${event.change} ${event.sourceId}: ${event.affected.join(", ")} -> ${event.action}\n`);
