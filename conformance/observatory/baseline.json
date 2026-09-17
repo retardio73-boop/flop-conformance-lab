@@ -1,6 +1,6 @@
 {
   "schema": "flop.protocol-drift-snapshot.v1",
-  "generatedAt": "2026-09-17T02:22:11.258Z",
+  "generatedAt": "2026-09-17T14:46:57.301Z",
   "observations": [
     {
       "id": "yellowpaper-main",
@@ -30,9 +30,9 @@
     {
       "id": "technocore-main",
       "state": {
-        "sha": "542790bdbdc6fe8ba30424531159b33711370a59"
+        "sha": "e4c4f73f3b28612d7161170b11e08e580b02123a"
       },
-      "fingerprint": "eyJzaGEiOiI1NDI3OTBiZGJkYzZmZThiYTMwNDI0NTMxMTU5YjMzNzExMzcwYTU5In0"
+      "fingerprint": "eyJzaGEiOiJlNGM0ZjczZjNiMjg2MTJkNzE2MTE3MGIxMWUwOGU1ODBiMDIxMjNhIn0"
     },
     {
       "id": "technocore-pr-851",
@@ -50,6 +50,34 @@
         "sha": "5cc4ab93efbc8999a3a7e1471b639deca25998ea"
       },
       "fingerprint": "eyJzaGEiOiI1Y2M0YWI5M2VmYmM4OTk5YTNhN2UxNDcxYjYzOWRlY2EyNTk5OGVhIn0"
+    },
+    {
+      "id": "yellowpaper-issue-5",
+      "state": {
+        "state": "closed",
+        "updated_at": "2026-09-10T16:18:47Z",
+        "title": "erratum: R10.2 timelock formula lacks its comparator; HTLC params link to §13.0"
+      },
+      "fingerprint": "eyJzdGF0ZSI6ImNsb3NlZCIsInRpdGxlIjoiZXJyYXR1bTogUjEwLjIgdGltZWxvY2sgZm9ybXVsYSBsYWNrcyBpdHMgY29tcGFyYXRvcjsgSFRMQyBwYXJhbXMgbGluayB0byDCpzEzLjAiLCJ1cGRhdGVkX2F0IjoiMjAyNi0wOS0xMFQxNjoxODo0N1oifQ"
+    },
+    {
+      "id": "tclk-issue-57",
+      "state": {
+        "state": "open",
+        "updated_at": "2026-09-07T04:19:23Z",
+        "title": "Design tclk/2 as agreements, transfer attempts, and verified rail observations"
+      },
+      "fingerprint": "eyJzdGF0ZSI6Im9wZW4iLCJ0aXRsZSI6IkRlc2lnbiB0Y2xrLzIgYXMgYWdyZWVtZW50cywgdHJhbnNmZXIgYXR0ZW1wdHMsIGFuZCB2ZXJpZmllZCByYWlsIG9ic2VydmF0aW9ucyIsInVwZGF0ZWRfYXQiOiIyMDI2LTA5LTA3VDA0OjE5OjIzWiJ9"
+    },
+    {
+      "id": "tclk-pr-58",
+      "state": {
+        "state": "open",
+        "merged": false,
+        "head_sha": "7b299a8bfd6ed70d6a7bd8b7852998d292100a37",
+        "updated_at": "2026-09-06T19:42:28Z"
+      },
+      "fingerprint": "eyJoZWFkX3NoYSI6IjdiMjk5YThiZmQ2ZWQ3MGQ2YTdiZDhiNzg1Mjk5OGQyOTIxMDBhMzciLCJtZXJnZWQiOmZhbHNlLCJzdGF0ZSI6Im9wZW4iLCJ1cGRhdGVkX2F0IjoiMjAyNi0wOS0wNlQxOTo0MjoyOFoifQ"
     }
   ]
 }
