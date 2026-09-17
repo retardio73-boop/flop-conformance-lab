@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
-import { parseTranscriptExport, type TranscriptRecord } from "@flop-labs/tclk";
 import { verifyExternalProfile, type PortableConformanceResult } from "./profiles.js";
 
 const ROOM_RE = /^[a-z0-9][a-z0-9_-]{0,47}$/;
+const TIMESTAMP_RE = /^\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/;
 export const DEFAULT_TECHNOCORE_URL = "https://technocore.chat";
 
 export interface LiveRoomBinding {
@@ -19,6 +19,16 @@ export interface LiveRoomCaptureOptions {
   implementation?: string;
   revision?: string;
   fetch?: typeof globalThis.fetch;
+}
+
+interface ExportRecord {
+  room: string;
+  seq: number;
+  ts: string;
+  sender: string;
+  nonce: string | null;
+  signature: string | null;
+  line: string;
 }
 
 interface ProfileRecord {
@@ -66,9 +76,8 @@ function normalizeBaseUrl(value: string): string {
   } catch {
     throw new Error("INVALID_TECHNOCORE_URL");
   }
-  if (parsed.protocol !== "https:" && !(parsed.protocol === "http:" && ["localhost", "127.0.0.1", "::1"].includes(parsed.hostname))) {
-    throw new Error("TECHNOCORE_URL_MUST_USE_HTTPS");
-  }
+  const localHttp = parsed.protocol === "http:" && ["localhost", "127.0.0.1", "::1"].includes(parsed.hostname);
+  if (parsed.protocol !== "https:" && !localHttp) throw new Error("TECHNOCORE_URL_MUST_USE_HTTPS");
   parsed.hash = "";
   parsed.search = "";
   return parsed.toString().replace(/\/$/, "");
@@ -83,6 +92,72 @@ function sha256Utf8(value: string): string {
   return createHash("sha256").update(value, "utf8").digest("hex");
 }
 
+function asObject(value: unknown, where: string): Record<string, unknown> {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error(`${where} is not a JSON object`);
+  }
+  return value as Record<string, unknown>;
+}
+
+function parseExportRecord(room: string, value: unknown): ExportRecord {
+  const message = asObject(value, "transcript message");
+  if (!Number.isSafeInteger(message.seq) || (message.seq as number) < 0) {
+    throw new Error("transcript message seq must be a non-negative safe integer");
+  }
+  if (typeof message.ts !== "string" || !TIMESTAMP_RE.test(message.ts)) {
+    throw new Error("transcript message timestamp must be timezone-qualified RFC 3339");
+  }
+  const timestampMs = Date.parse(message.ts);
+  if (!Number.isSafeInteger(timestampMs) || timestampMs < 0) {
+    throw new Error("transcript message timestamp is invalid");
+  }
+  if (typeof message.from !== "string") throw new Error("transcript message has no sender");
+  if (typeof message.text !== "string") throw new Error("transcript message has no text");
+
+  let nonce: string | null = null;
+  if (typeof message.nonce === "string") nonce = message.nonce;
+  else if (typeof message.nonce === "number" && Number.isSafeInteger(message.nonce)) nonce = String(message.nonce);
+  else if (message.nonce !== undefined && message.nonce !== null) {
+    throw new Error("transcript message nonce must be decimal text");
+  }
+
+  let signature: string | null = null;
+  if (typeof message.sig === "string") signature = message.sig;
+  else if (message.sig !== undefined && message.sig !== null) {
+    throw new Error("transcript message signature must be text");
+  }
+
+  return {
+    room,
+    seq: message.seq as number,
+    ts: message.ts,
+    sender: message.from,
+    nonce,
+    signature,
+    line: message.text,
+  };
+}
+
+function parseRoomExport(room: string, jsonl: string): ExportRecord[] {
+  const records: ExportRecord[] = [];
+  jsonl.split("\n").forEach((line, index) => {
+    if (line.trim() === "") return;
+    let value: unknown;
+    try {
+      value = JSON.parse(line) as unknown;
+    } catch {
+      throw new Error(`ROOM_EXPORT_LINE_${index + 1}_NOT_JSON`);
+    }
+    try {
+      records.push(parseExportRecord(room, value));
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : "invalid record";
+      throw new Error(`ROOM_EXPORT_LINE_${index + 1}:${reason}`);
+    }
+  });
+  return records;
+}
+
 async function readBodyOrThrow(response: Response, what: string): Promise<string> {
   const body = await response.text();
   if (!response.ok) {
@@ -92,15 +167,13 @@ async function readBodyOrThrow(response: Response, what: string): Promise<string
   return body;
 }
 
-function toProfileRecord(record: TranscriptRecord): ProfileRecord | null {
+function toProfileRecord(record: ExportRecord): ProfileRecord | null {
   if (record.nonce === null || record.signature === null) return null;
   return {
     room: record.room,
-    // Technocore /export does not expose a durable room-generation identifier. The raw
-    // export hash remains the provenance anchor; generation 0 is local to this capture.
     generation: 0,
     seq: record.seq,
-    ts: new Date(record.timestampMs).toISOString(),
+    ts: record.ts,
     from: record.sender,
     text: record.line,
     nonce: record.nonce,
@@ -126,7 +199,7 @@ export async function captureAndVerifyLiveRoom(options: LiveRoomCaptureOptions):
     headers: { accept: "text/plain" },
   });
   const rawExport = await readBodyOrThrow(response, "ROOM_EXPORT");
-  const exportedRecords = parseTranscriptExport(room, rawExport);
+  const exportedRecords = parseRoomExport(room, rawExport);
   if (exportedRecords.length === 0) throw new Error("EMPTY_ROOM_EXPORT");
 
   const records = exportedRecords.map(toProfileRecord).filter((record): record is ProfileRecord => record !== null);
