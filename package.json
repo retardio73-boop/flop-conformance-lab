@@ -19,6 +19,6 @@
   },
   "keywords": ["flop", "tclk", "technocore", "conformance", "interoperability", "ai-agents", "ci", "evidence"],
   "license": "Apache-2.0",
-  "dependencies": { "@flop-labs/tclk": "0.1.0" },
+  "dependencies": { "@flop-labs/tclk": "0.1.0", "@noble/hashes": "2.4.0" },
   "devDependencies": { "@types/node": "^24.0.0", "typescript": "^5.9.0" }
 }

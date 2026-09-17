@@ -146,3 +146,9 @@ Optional settlement object:
 ## Adoption rule
 
 The useful integration target is not a badge by itself. A downstream repository should keep the input evidence or generation step in version control, run the profile in CI, retain `conformance-report.json` as an artifact, and pin the Lab by immutable tag/commit. A public badge is meaningful only when it links to that reproducible evidence.
+
+## Profile: `direct-rail-f1`
+
+Use this profile as an admission/release gate for a public direct-rail producer or verifier. It recomputes the Appendix F.1 `task_hash`, verifies the 64-byte `report_data`, and requires evidence that the two recorded legacy task forms plus bare 32-byte report data are rejected. Until Yellow Paper #61 is resolved, successful byte-level conformance returns `PARTIAL` with an explicit normative-state warning. See `examples/external-consumer/direct-rail-f1.json`.
+
+The Lab also pins independent Python reproduction evidence from `osr21/flop-protocol-reproducibility-audits@f701db3a211746b65747d69f1e480d8e4500cfb9`. That cross-language agreement is evidence about the public vector only; it is not a claim about private runtimes, deployed compatibility, or upstream ratification.

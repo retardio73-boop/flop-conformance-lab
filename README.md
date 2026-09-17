@@ -90,9 +90,12 @@ The Lab also exposes narrow evidence profiles so downstream tools can run cross-
 node dist/src/cli.js profiles
 node dist/src/cli.js verify --profile technocore-agent --input evidence/agent.json --out conformance-report.json
 node dist/src/cli.js verify --profile tclk-transcript --input evidence/transcript.json --out conformance-report.json
+node dist/src/cli.js verify --profile direct-rail-f1 --input examples/external-consumer/direct-rail-f1.json --out direct-rail-report.json
 ```
 
 The portable output schema is `flop-conformance-result/v1`. `PASS`, `PARTIAL`, and `FAIL` distinguish verified supplied evidence from incomplete evidence and hard conformance failures. A profile PASS is not a FLOP Labs certification and never upgrades transcript activity into a settlement claim.
+
+`direct-rail-f1` is a release gate for Appendix F.1 bytes and negative legacy cases. While Yellow Paper #61 remains open it returns `PARTIAL` even when byte-level checks pass, so vector agreement is never misrepresented as normative resolution.
 
 A reusable root `action.yml` provides the same interface for GitHub Actions. Consumers should pin an immutable release tag or commit and retain `conformance-report.json` as CI evidence. See [`docs/external-integration.md`](docs/external-integration.md) and [`schemas/flop-conformance-result-v1.schema.json`](schemas/flop-conformance-result-v1.schema.json).
 

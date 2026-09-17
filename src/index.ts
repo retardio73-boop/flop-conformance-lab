@@ -11,6 +11,7 @@ import { validateTclkIssue96Fixture } from "./tclk-venue-time.js";
 import { validateClientCrashSettlementFixture } from "./client-crash-settlement.js";
 import { validateContributionProof851Populations } from "./technocore-contribution-proof.js";
 import { validateEcosystemInteropFixture } from "./ecosystem-interop.js";
+import { validateDirectRailF1CrossLanguageEvidence } from "./direct-rail-f1.js";
 import type { LabReport } from "./types.js";
 
 export * from "./types.js";
@@ -42,6 +43,7 @@ export * from "./sonnet-discussion.js";
 export * from "./sonnet-planning.js";
 export * from "./sonnet-state.js";
 export * from "./profiles.js";
+export * from "./direct-rail-f1.js";
 
 function packageVersion(): string {
   const metadata = JSON.parse(
@@ -67,6 +69,7 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
   const clientCrashSettlement = validateClientCrashSettlementFixture();
   const technocore851 = validateContributionProof851Populations();
   const ecosystemInterop = validateEcosystemInteropFixture();
+  const directRailF1CrossLanguage = validateDirectRailF1CrossLanguageEvidence();
   const d0440Conflict = JSON.parse(
     readFileSync(
       new URL("../conformance/fixtures/flop-d0440-source-conflict.json", import.meta.url),
@@ -80,6 +83,7 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
     ),
   ) as Record<string, unknown>;
   const cases = [
+    { id: "flop.direct-rail-f1-cross-language", suite: "flop", status: "PASS" as const, normativeStatus: "OPEN_ISSUE" as const, durationMs: 0, details: directRailF1CrossLanguage },
     { id: "ecosystem.interop-registry-v1", suite: "evidence", status: "PASS" as const, normativeStatus: "LOCAL_POLICY" as const, durationMs: 0, details: ecosystemInterop },
     ...(await coreSuites()),
     ...(await routerSuite(routerModule)),

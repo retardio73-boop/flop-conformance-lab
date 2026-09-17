@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+﻿import { readFileSync } from "node:fs";
 import { tryDecodeFrame } from "@flop-labs/tclk";
 import {
   analyzeTranscriptEvidence,
@@ -10,8 +10,9 @@ import {
 import { didKeyBytes, transportRepresentable, verifyTechnocoreRecord } from "./technocore.js";
 import type { TransportRecord } from "./types.js";
 import { verifyFlopMarketAdapter } from "./flop-market-profile.js";
+import { assessDirectRailF1, type DirectRailF1Input, type DirectRailF1Observed } from "./direct-rail-f1.js";
 
-export const EXTERNAL_PROFILES = ["tclk-transcript", "technocore-agent", "flop-market-adapter"] as const;
+export const EXTERNAL_PROFILES = ["tclk-transcript", "technocore-agent", "flop-market-adapter", "direct-rail-f1"] as const;
 export type ExternalProfile = (typeof EXTERNAL_PROFILES)[number];
 export type PortableCheckStatus = "PASS" | "WARN" | "FAIL" | "SKIP";
 export type PortableResultStatus = "PASS" | "PARTIAL" | "FAIL";
@@ -377,9 +378,50 @@ function verifyTechnocoreAgent(rawInput: unknown): PortableConformanceResult {
   }
 }
 
+function verifyDirectRailF1(rawInput: unknown): PortableConformanceResult {
+  try {
+    const input = asObject(rawInput, "PROFILE_INPUT");
+    const vector = asObject(input.input, "DIRECT_RAIL_F1_INPUT");
+    const observedObject = asObject(input.observed, "DIRECT_RAIL_F1_OBSERVED");
+    const integer = (object: JsonObject, key: string): string | number => {
+      const value = object[key];
+      if (typeof value === "string" || typeof value === "number") return value;
+      throw new Error(`INVALID_${key.toUpperCase()}`);
+    };
+    const bool = (object: JsonObject, key: string): boolean => {
+      const value = object[key];
+      if (typeof value !== "boolean") throw new Error(`INVALID_${key.toUpperCase()}`);
+      return value;
+    };
+    const directInput: DirectRailF1Input = {
+      genesisHashHex: requiredString(vector, "genesisHashHex"), agentAccountId32Hex: requiredString(vector, "agentAccountId32Hex"),
+      nonce: integer(vector, "nonce"), modelHashHex: requiredString(vector, "modelHashHex"), payloadHashHex: requiredString(vector, "payloadHashHex"),
+      commitHashHex: requiredString(vector, "commitHashHex"), gnWeight: integer(vector, "gnWeight"), latencyMs: integer(vector, "latencyMs"),
+      outputHashHex: requiredString(vector, "outputHashHex"), decodePolicyHashHex: requiredString(vector, "decodePolicyHashHex"), teeTypeScaleHex: requiredString(vector, "teeTypeScaleHex"),
+    };
+    const observed: DirectRailF1Observed = {
+      taskHashHex: requiredString(observedObject, "taskHashHex"), reportDataHex: requiredString(observedObject, "reportDataHex"),
+      legacyTaskU64Accepted: bool(observedObject, "legacyTaskU64Accepted"), legacyTaskU32Accepted: bool(observedObject, "legacyTaskU32Accepted"),
+      bareReportDataAccepted: bool(observedObject, "bareReportDataAccepted"),
+    };
+    const assessment = assessDirectRailF1(directInput, observed);
+    const checks: PortableCheck[] = [];
+    checks.push(check("direct-rail-f1.task-hash", assessment.canonicalTaskHash ? "PASS" : "FAIL", assessment.canonicalTaskHash ? "Observed task_hash matches the canonical Appendix F.1 computation." : "Observed task_hash does not match the canonical Appendix F.1 computation.", { computed: assessment.computed.taskHashHex }));
+    checks.push(check("direct-rail-f1.report-data", assessment.canonicalReportData ? "PASS" : "FAIL", assessment.canonicalReportData ? "Observed report_data matches SHA256(report_preimage) || 00x32." : "Observed report_data does not match the canonical 64-byte Appendix F.1 value.", { computed: assessment.computed.reportDataHex }));
+    checks.push(check("direct-rail-f1.reject-legacy-u64", assessment.rejectsLegacyTaskU64 ? "PASS" : "FAIL", assessment.rejectsLegacyTaskU64 ? "Implementation evidence rejects the recorded 136-byte legacy task form." : "Implementation evidence accepts the recorded 136-byte legacy task form."));
+    checks.push(check("direct-rail-f1.reject-legacy-u32", assessment.rejectsLegacyTaskU32 ? "PASS" : "FAIL", assessment.rejectsLegacyTaskU32 ? "Implementation evidence rejects the recorded 132-byte legacy task form." : "Implementation evidence accepts the recorded 132-byte legacy task form."));
+    checks.push(check("direct-rail-f1.reject-bare-report", assessment.rejectsBareReportData ? "PASS" : "FAIL", assessment.rejectsBareReportData ? "Implementation evidence rejects bare 32-byte report_data." : "Implementation evidence accepts bare 32-byte report_data."));
+    checks.push(check("direct-rail-f1.normative-state", "WARN", "Yellow Paper #61 remains OPEN_ISSUE; vector conformance is not an upstream protocol-resolution claim.", { specState: assessment.specState }));
+    return finalize("direct-rail-f1", input, checks);
+  } catch (error) {
+    return failureResult("direct-rail-f1", rawInput, error);
+  }
+}
+
 export function verifyExternalProfile(profile: string, input: unknown): PortableConformanceResult {
   if (profile === "tclk-transcript") return verifyTclkTranscript(input);
   if (profile === "technocore-agent") return verifyTechnocoreAgent(input);
   if (profile === "flop-market-adapter") return verifyFlopMarketAdapter(input);
+  if (profile === "direct-rail-f1") return verifyDirectRailF1(input);
   throw new Error(`UNKNOWN_EXTERNAL_PROFILE:${profile}`);
 }
