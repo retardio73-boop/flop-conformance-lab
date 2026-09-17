@@ -1,0 +1,55 @@
+{
+  "schema": "flop.protocol-drift-snapshot.v1",
+  "generatedAt": "2026-09-17T02:22:11.258Z",
+  "observations": [
+    {
+      "id": "yellowpaper-main",
+      "state": {
+        "sha": "cb3cbf97a346ff85aca6dba5e924434270ca672c"
+      },
+      "fingerprint": "eyJzaGEiOiJjYjNjYmY5N2EzNDZmZjg1YWNhNmRiYTVlOTI0NDM0MjcwY2E2NzJjIn0"
+    },
+    {
+      "id": "yellowpaper-issue-56",
+      "state": {
+        "state": "open",
+        "updated_at": "2026-09-16T19:16:09Z",
+        "title": "ambiguity: the agent receipt signs payable:u128LE, a value the document defines nowhere and settle does not carry"
+      },
+      "fingerprint": "eyJzdGF0ZSI6Im9wZW4iLCJ0aXRsZSI6ImFtYmlndWl0eTogdGhlIGFnZW50IHJlY2VpcHQgc2lnbnMgcGF5YWJsZTp1MTI4TEUsIGEgdmFsdWUgdGhlIGRvY3VtZW50IGRlZmluZXMgbm93aGVyZSBhbmQgc2V0dGxlIGRvZXMgbm90IGNhcnJ5IiwidXBkYXRlZF9hdCI6IjIwMjYtMDktMTZUMTk6MTY6MDlaIn0"
+    },
+    {
+      "id": "yellowpaper-issue-57",
+      "state": {
+        "state": "open",
+        "updated_at": "2026-09-12T15:33:28Z",
+        "title": "erratum: §1's hash table still calls the transcript accumulator an \"aggregate_gn sum-tree\"; F.3's node rule carries no sum"
+      },
+      "fingerprint": "eyJzdGF0ZSI6Im9wZW4iLCJ0aXRsZSI6ImVycmF0dW06IMKnMSdzIGhhc2ggdGFibGUgc3RpbGwgY2FsbHMgdGhlIHRyYW5zY3JpcHQgYWNjdW11bGF0b3IgYW4gXCJhZ2dyZWdhdGVfZ24gc3VtLXRyZWVcIjsgRi4zJ3Mgbm9kZSBydWxlIGNhcnJpZXMgbm8gc3VtIiwidXBkYXRlZF9hdCI6IjIwMjYtMDktMTJUMTU6MzM6MjhaIn0"
+    },
+    {
+      "id": "technocore-main",
+      "state": {
+        "sha": "542790bdbdc6fe8ba30424531159b33711370a59"
+      },
+      "fingerprint": "eyJzaGEiOiI1NDI3OTBiZGJkYzZmZThiYTMwNDI0NTMxMTU5YjMzNzExMzcwYTU5In0"
+    },
+    {
+      "id": "technocore-pr-851",
+      "state": {
+        "state": "open",
+        "merged": false,
+        "head_sha": "a59919f447bfd64b5661f968dcaf7e3b93f06854",
+        "updated_at": "2026-09-14T23:47:53Z"
+      },
+      "fingerprint": "eyJoZWFkX3NoYSI6ImE1OTkxOWY0NDdiZmQ2NGI1NjYxZjk2OGRjYWY3ZTNiOTNmMDY4NTQiLCJtZXJnZWQiOmZhbHNlLCJzdGF0ZSI6Im9wZW4iLCJ1cGRhdGVkX2F0IjoiMjAyNi0wOS0xNFQyMzo0Nzo1M1oifQ"
+    },
+    {
+      "id": "tclk-main",
+      "state": {
+        "sha": "5cc4ab93efbc8999a3a7e1471b639deca25998ea"
+      },
+      "fingerprint": "eyJzaGEiOiI1Y2M0YWI5M2VmYmM4OTk5YTNhN2UxNDcxYjYzOWRlY2EyNTk5OGVhIn0"
+    }
+  ]
+}

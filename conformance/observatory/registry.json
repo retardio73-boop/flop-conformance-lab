@@ -1,0 +1,48 @@
+{
+  "schema": "flop.protocol-drift-registry.v1",
+  "classification": "LOCAL_POLICY",
+  "sources": [
+    {
+      "id": "yellowpaper-main",
+      "kind": "github-ref",
+      "repository": "flop-labs/yellowpaper",
+      "ref": "main",
+      "affects": ["flop.quote-open-channel-receipt", "flop.yellowpaper-56-57-boundaries", "flop.direct-rail-f1-cross-language"]
+    },
+    {
+      "id": "yellowpaper-issue-56",
+      "kind": "github-issue",
+      "repository": "flop-labs/yellowpaper",
+      "issue": 56,
+      "affects": ["flop.yellowpaper-56-57-boundaries", "flop.quote-open-channel-receipt"]
+    },
+    {
+      "id": "yellowpaper-issue-57",
+      "kind": "github-issue",
+      "repository": "flop-labs/yellowpaper",
+      "issue": 57,
+      "affects": ["flop.yellowpaper-56-57-boundaries"]
+    },
+    {
+      "id": "technocore-main",
+      "kind": "github-ref",
+      "repository": "flop-labs/technocore-chat",
+      "ref": "main",
+      "affects": ["technocore.transport", "technocore.contribution-proof-v1"]
+    },
+    {
+      "id": "technocore-pr-851",
+      "kind": "github-pr",
+      "repository": "flop-labs/technocore-chat",
+      "pr": 851,
+      "affects": ["technocore.contribution-proof-v1"]
+    },
+    {
+      "id": "tclk-main",
+      "kind": "github-ref",
+      "repository": "flop-labs/tclk",
+      "ref": "main",
+      "affects": ["tclk.release-vectors", "tclk.transport", "flop.reference-journey"]
+    }
+  ]
+}
