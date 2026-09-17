@@ -45,7 +45,10 @@
     "below": 7199,
     "equal": 7200,
     "above": 7201,
-    "issue": 5
+    "issue": 5,
+    "comparator": ">=",
+    "equalityAdmissible": true,
+    "source": "flop-labs/yellowpaper#5 resolved by sv; implementation gate flop_timeout >= required_flop_timeout"
   },
   "railMarginCanary": {
     "source": "flop-labs/tclk#57 comment by zkasuran",
