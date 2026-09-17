@@ -1,6 +1,6 @@
 {
   "schema": "flop.protocol-drift-snapshot.v1",
-  "generatedAt": "2026-09-17T14:46:57.301Z",
+  "generatedAt": "2026-09-17T14:56:55.163Z",
   "observations": [
     {
       "id": "yellowpaper-main",
@@ -78,6 +78,24 @@
         "updated_at": "2026-09-06T19:42:28Z"
       },
       "fingerprint": "eyJoZWFkX3NoYSI6IjdiMjk5YThiZmQ2ZWQ3MGQ2YTdiZDhiNzg1Mjk5OGQyOTIxMDBhMzciLCJtZXJnZWQiOmZhbHNlLCJzdGF0ZSI6Im9wZW4iLCJ1cGRhdGVkX2F0IjoiMjAyNi0wOS0wNlQxOTo0MjoyOFoifQ"
+    },
+    {
+      "id": "yellowpaper-issue-16",
+      "state": {
+        "state": "open",
+        "updated_at": "2026-09-10T11:04:02Z",
+        "title": "ambiguity: R10.2 depends on current_finality_lag, which the document never defines"
+      },
+      "fingerprint": "eyJzdGF0ZSI6Im9wZW4iLCJ0aXRsZSI6ImFtYmlndWl0eTogUjEwLjIgZGVwZW5kcyBvbiBjdXJyZW50X2ZpbmFsaXR5X2xhZywgd2hpY2ggdGhlIGRvY3VtZW50IG5ldmVyIGRlZmluZXMiLCJ1cGRhdGVkX2F0IjoiMjAyNi0wOS0xMFQxMTowNDowMloifQ"
+    },
+    {
+      "id": "yellowpaper-issue-51",
+      "state": {
+        "state": "open",
+        "updated_at": "2026-09-11T07:38:30Z",
+        "title": "challenge: E.48's fee-floor deterrence premise (collusion_deterred) doesn't scale with R10.5's variable-settlement lock size"
+      },
+      "fingerprint": "eyJzdGF0ZSI6Im9wZW4iLCJ0aXRsZSI6ImNoYWxsZW5nZTogRS40OCdzIGZlZS1mbG9vciBkZXRlcnJlbmNlIHByZW1pc2UgKGNvbGx1c2lvbl9kZXRlcnJlZCkgZG9lc24ndCBzY2FsZSB3aXRoIFIxMC41J3MgdmFyaWFibGUtc2V0dGxlbWVudCBsb2NrIHNpemUiLCJ1cGRhdGVkX2F0IjoiMjAyNi0wOS0xMVQwNzozODozMFoifQ"
     }
   ]
 }

@@ -13,7 +13,7 @@ import { validateContributionProof851Populations } from "./technocore-contributi
 import { validateEcosystemInteropFixture } from "./ecosystem-interop.js";
 import { validateDirectRailF1CrossLanguageEvidence } from "./direct-rail-f1.js";
 import { validateReferenceJourney } from "./reference-journey.js";
-import { validateHtlcConformanceFixture } from "./htlc-conformance.js";
+import { validateHtlcConformanceFixture, validateExperimentalPairFixtures } from "./htlc-conformance.js";
 import { contributionVectorSuite } from "./technocore-contribution-vectors.js";
 import type { LabReport } from "./types.js";
 
@@ -83,6 +83,7 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
   const referenceJourney = validateReferenceJourney();
   const contributionVectors = contributionVectorSuite();
   const htlcConformance = validateHtlcConformanceFixture();
+  const htlcPairs = validateExperimentalPairFixtures();
   const d0440Conflict = JSON.parse(
     readFileSync(
       new URL("../conformance/fixtures/flop-d0440-source-conflict.json", import.meta.url),
@@ -98,6 +99,7 @@ export async function runLab(routerModule?: string): Promise<LabReport> {
   const cases = [
     { id: "flop.reference-journey", suite: "flop", status: "PASS" as const, normativeStatus: "LOCAL_POLICY" as const, durationMs: 0, details: referenceJourney },
     { id: "flop.htlc-conformance-v1", suite: "flop", status: "PASS" as const, normativeStatus: "OPEN_ISSUE" as const, durationMs: 0, details: htlcConformance },
+    { id: "flop.htlc-pair-fixtures-v1", suite: "flop", status: "PASS" as const, normativeStatus: "OPEN_ISSUE" as const, durationMs: 0, details: htlcPairs },
     { id: "technocore.contribution-proof-vectors", suite: "technocore", status: "PASS" as const, normativeStatus: "PROVISIONAL_PR" as const, durationMs: 0, details: contributionVectors },
     { id: "flop.direct-rail-f1-cross-language", suite: "flop", status: "PASS" as const, normativeStatus: "OPEN_ISSUE" as const, durationMs: 0, details: directRailF1CrossLanguage },
     { id: "ecosystem.interop-registry-v1", suite: "evidence", status: "PASS" as const, normativeStatus: "LOCAL_POLICY" as const, durationMs: 0, details: ecosystemInterop },
