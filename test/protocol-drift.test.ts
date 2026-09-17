@@ -32,3 +32,13 @@ test("first observation never pretends conformance is known", () => {
   assert.equal(event?.previousResult, "UNKNOWN");
   assert.equal(event?.currentResult, "UNKNOWN");
 });
+
+test("HTLC lane is wired to its upstream drift authorities", () => {
+  const registry = loadDriftRegistry();
+  const byId = new Map(registry.sources.map((source) => [source.id, source]));
+  for (const id of ["yellowpaper-main", "yellowpaper-issue-5", "tclk-main", "tclk-issue-57", "tclk-pr-58"]) {
+    const source = byId.get(id);
+    assert.ok(source, `missing drift source ${id}`);
+    assert.ok(source.affects.includes("flop.htlc-conformance-v1"), `${id} must invalidate HTLC conformance`);
+  }
+});
