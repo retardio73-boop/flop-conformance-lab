@@ -70,6 +70,14 @@ See [`docs/adversarial-evidence-suite-v1.md`](docs/adversarial-evidence-suite-v1
 
 `conformance/fixtures/ecosystem-interop-v1.json` pins community projects used as vector, receipt, transport, observability, security, discovery, or downstream integration references. Community behavior is never promoted to FLOP/TCLK normative status by inclusion. TCR-1 receipts may be adapted into `flop.work-evidence.v1` only after cryptographic and artifact verification; allocation credit remains `NOT_DERIVED`.
 
+## Protocol Drift Observatory
+
+`conformance/observatory/registry.json` maps upstream Yellow Paper, Technocore and TCLK sources to the fixtures they can invalidate. A scheduled read-only workflow compares those sources with the committed baseline; any changed fingerprint marks affected results `UNKNOWN` and requires fixture regeneration instead of silently promoting new upstream behavior. See [`docs/protocol-drift-observatory.md`](docs/protocol-drift-observatory.md).
+
+The Lab also contains a deliberately partial [`flop.reference-journey.v1`](conformance/fixtures/flop-reference-journey-v1.json): discover → quote → validate → route → open channel → turn → receipt → close → settlement representation. It preserves Yellow Paper #26/#56 blockers and never represents the journey as live FLOP execution.
+
+Experimental agent discovery and reputation-evidence schemas are documented in [`docs/experimental-agent-economics.md`](docs/experimental-agent-economics.md). They are local research surfaces intended for Router, Inference Market, Control Center and Empires; they are not FLOP or Technocore standards and define no universal reputation score.
+
 ## Run
 
 ```powershell
