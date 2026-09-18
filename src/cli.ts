@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { runLab } from "./index.js";
 import { EXTERNAL_PROFILES, verifyExternalProfile } from "./profiles.js";
 import { captureAndVerifyLiveRoom } from "./live-room.js";
+import { verifyEvidenceScoutPublic } from "./evidence-scout-public.js";
 
 const args = process.argv.slice(2);
 const flag = (name: string): string | undefined => {
@@ -17,6 +18,7 @@ function usage(): string {
     "  flop-conformance run [--router-module path] [--out report.json]",
     "  flop-conformance verify --profile <name> --input <file.json> [--out report.json]",
     "  flop-conformance verify-live-room --room <name> --payer <did> --payee <did> --contract <id> [--out evidence.json] [--raw-out export.txt] [--technocore-url https://technocore.chat] [--allow-gaps]",
+    "  flop-conformance verify-evidence-scout-public --revision <sha> [--repository owner/repo] [--technocore-url https://technocore.chat] [--out report.json]",
     "  flop-conformance profiles",
     "",
     `profiles: ${EXTERNAL_PROFILES.join(", ")}`,
@@ -61,6 +63,30 @@ if (args[0] === "verify-live-room") {
     if (bundle.report.result === "FAIL") process.exitCode = 1;
   } catch (error) {
     process.stderr.write(`LIVE_ROOM_VERIFY_FAILED:${error instanceof Error ? error.message : "failed"}\n`);
+    process.exitCode = 2;
+  }
+  process.exit();
+}
+
+if (args[0] === "verify-evidence-scout-public") {
+  const revision = flag("--revision");
+  if (!revision) {
+    process.stderr.write(usage());
+    process.exit(2);
+  }
+  try {
+    const report = await verifyEvidenceScoutPublic({
+      revision,
+      repository: flag("--repository"),
+      technocoreUrl: flag("--technocore-url"),
+    });
+    const text = JSON.stringify(report, null, 2);
+    const out = flag("--out");
+    if (out) writeFileSync(out, `${text}\n`);
+    else process.stdout.write(`${text}\n`);
+    if (report.result === "FAIL") process.exitCode = 1;
+  } catch (error) {
+    process.stderr.write(`EVIDENCE_SCOUT_PUBLIC_VERIFY_FAILED:${error instanceof Error ? error.message : "failed"}\n`);
     process.exitCode = 2;
   }
   process.exit();
