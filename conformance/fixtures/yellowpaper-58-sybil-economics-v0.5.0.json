@@ -6,7 +6,11 @@
     "repository": "flop-labs/yellowpaper",
     "version": "0.5.0-draft",
     "issue": 58,
-    "openItems": ["E.38", "E.40", "E.49"],
+    "openItems": [
+      "E.38",
+      "E.40",
+      "E.49"
+    ],
     "agentIdentityMinStake": "10"
   },
   "model": {
@@ -106,16 +110,65 @@
     ]
   },
   "empiricalLane": {
-    "status": "WAITING_FOR_PUBLIC_DATASET",
-    "sourceClaim": "Issue #58 reports signature-verifying Technocore observations and offers the dataset/transcripts, but the Lab has not imported or independently verified them.",
-    "acceptanceRequirements": [
-      "publicly retrievable immutable dataset or fixture subset",
-      "documented capture scope and sampling limitations",
-      "offline-verifiable signatures or hashes",
-      "deterministic parser/reproducer",
-      "no inference from DID count to operator count without an explicit evidence rule"
-    ],
-    "importedObservations": 0
+    "status": "PUBLIC_ANALYSIS_VERIFIED_INPUT_NOT_PUBLIC",
+    "sourceRepository": "lastbubble2035/tca",
+    "sourceCommit": "df23b6b5b5a1f5c9a3547dae86bbbe062c45b8a3",
+    "analysisFiles": {
+      "tclkScript": "analysis/tclk_structure.py",
+      "tclkOutput": "analysis/tclk-structure.json",
+      "sonnetScript": "analysis/sonnet_registration.py",
+      "sonnetOutput": "analysis/sonnet-registration.json"
+    },
+    "verified": {
+      "scriptHashesMatchCommittedOutputs": true,
+      "tclkScriptSha256": "d3cb2a87a11047dd3813ff0dc64b64be1e12f92eb9c030d1012d5cdcbc0e9099",
+      "sonnetScriptSha256": "443672b1049613dba2191ae274b3e4ab9e2240e0adbb1e8590ada901437fad65",
+      "outputFilesPublicAndImmutableAtPinnedCommit": true
+    },
+    "observedClaims": {
+      "classification": "STRUCTURAL_OBSERVATIONS_ONLY",
+      "operatorAttribution": "NOT_CLAIMED",
+      "tclk": {
+        "acceptsTotal": 3724422,
+        "acceptsMatchedToOffer": 3704334,
+        "selfAcceptEvents": 1102,
+        "distinctPayerPayeePairs": 393764,
+        "identitiesOnBothSides": 5239,
+        "statementReuseAcrossDids": 204,
+        "statementReuseMaxDids": 4,
+        "maxHubCounterparties": 15277,
+        "windowFirstObserved": "2026-09-02T07:12:14.258871Z",
+        "windowLastObserved": "2026-09-18T00:52:24.634429Z"
+      },
+      "sonnet": {
+        "messagesArchived": 3207919,
+        "distinctRegisteringDids": 3082368,
+        "registrationsTotal": 3182349,
+        "voterRegistrations": 3158839,
+        "refereeReceiptedDids": 999,
+        "accountsUnderMultipleDids": 188,
+        "accountsWithMultipleAcceptedDids": 116,
+        "largestDidsPerDeclaredAccount": 238,
+        "captureCoverageReported": "89.8%",
+        "captureHolesReported": 362813
+      }
+    },
+    "remainingBlocker": {
+      "status": "WAITING_FOR_IMMUTABLE_ARCHIVE_INPUT",
+      "reason": "The pinned public commit contains scripts and outputs but no sqlite/archive snapshot or immutable input manifest sufficient to regenerate the counts from original captured messages.",
+      "requiredForFullReproduction": [
+        "public or retrievable immutable archive/snapshot used by the analysis",
+        "SHA-256 or equivalent immutable hash of that input",
+        "capture manifest covering room, sequence range, gaps and time window",
+        "same exact analysis invocation against that pinned input"
+      ]
+    },
+    "claimBoundary": {
+      "regeneratedCountsFromOriginalInput": false,
+      "scriptIntegrityVerified": true,
+      "outputIntegrityPinned": true,
+      "normativeResolution": false
+    }
   },
   "scope": {
     "sybilDetector": false,
