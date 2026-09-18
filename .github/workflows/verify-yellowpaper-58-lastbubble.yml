@@ -1,9 +1,6 @@
 name: verify yellowpaper 58 lastbubble snapshot
 
 on:
-  push:
-    branches:
-      - verify-yellowpaper-58-lastbubble
   workflow_dispatch:
 
 jobs:
