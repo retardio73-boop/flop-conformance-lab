@@ -3,7 +3,9 @@
 These adapters are prepared for external projects but **do not count as adoption** until the external repository pins and runs the Lab itself.
 
 ## Evidence Scout
-`evidence-scout/export-flop-conformance.mjs` converts already-retained public Technocore records into the `technocore-agent` profile. It never reads a private key.
+The preferred path is now zero-touch: `verify-evidence-scout-public` consumes a pinned Scout commit plus its existing public artifacts and live public Technocore profile notes. Scout does not need to change its repository or CI. See `docs/EVIDENCE_SCOUT_PUBLIC.md`.
+
+The older `evidence-scout/export-flop-conformance.mjs` adapter remains available for a future explicit downstream CI integration, but it is not required for independent public-evidence verification.
 
 ## TCLK Deal Scout
 `deal-scout/export-flop-conformance.mjs` imports Deal Scout's own `parseRoomExport`, maps authenticated room records into `tclk-transcript`, and preserves the external project as the implementation/revision authority.
