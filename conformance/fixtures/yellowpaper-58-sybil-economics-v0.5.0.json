@@ -155,10 +155,11 @@
     },
     "remainingBlocker": {
       "status": "COVERAGE_AMBIGUITY_REMAINS",
-      "reason": "The published frozen snapshot is reproducible, but only 69.7% of the observed sequence range is represented and the cause of missing sequence numbers is unresolved.",
+      "reason": "Two independent frozen tclk-offers snapshots now reproduce end-to-end. The denser corroborating snapshot covers 97.8% of its sequence range, strongly supporting capture loss as the cause of the earlier 69.7% lane's missing sequence values, but neither snapshot is a complete full-room capture.",
       "requiredForFullRoomCoverageClaim": [
-        "determine whether missing sequence numbers are capture loss or unrelated room traffic sharing the counter",
-        "publish evidence sufficient to classify the missing sequence population"
+        "publish a complete authoritative room export or equivalent evidence accounting for every sequence value",
+        "retain the distinction between structural observations and operator attribution",
+        "obtain upstream normative resolution separately from empirical reproduction"
       ]
     },
     "claimBoundary": {
@@ -214,8 +215,49 @@
     },
     "corroboration": {
       "repository": "lastbubble2035/tca",
-      "commit": "df23b6b5b5a1f5c9a3547dae86bbbe062c45b8a3",
-      "status": "PUBLIC_ANALYSIS_VERIFIED_INPUT_NOT_PUBLIC"
+      "commit": "fc9ea0ce41a2484a1cbbb8cc919e3b9fb6304700",
+      "status": "REPRODUCED_SNAPSHOT_WITH_COVERAGE_CAVEAT",
+      "reproduction": {
+        "ciRun": "https://github.com/retardio73-boop/flop-conformance-lab/actions/runs/35400991297",
+        "sourceScriptPath": "analysis/tclk_structure.py",
+        "sourceScriptSha256": "d3cb2a87a11047dd3813ff0dc64b64be1e12f92eb9c030d1012d5cdcbc0e9099",
+        "importScriptPath": "tca_import_snapshot.py",
+        "importScriptSha256": "ab7fbb840b54e9530e569781293916247d01af3a5c0c203516af024db65736ba",
+        "snapshotReleaseTag": "tclk-snapshot-2026-09-18",
+        "snapshotAsset": "tclk-offers-snapshot-20260918T151701Z.jsonl.gz",
+        "snapshotGzipBytes": 1129534154,
+        "snapshotGzipSha256": "df22adf7f5f7ff059737506788800a1090fe554e4c330b22aeab00bdbb2c3ffb",
+        "snapshotDecompressedSha256": "5393e97658364c838f3447cfa83def782dbf66eaac0f4b3d4f724ab3dac0cc77",
+        "expectedOutputPath": "analysis/tclk-structure-close.json",
+        "expectedOutputSha256": "b5f7b0bd3b608ba65c2343522a3c0f28939595a7ab584703891474ce5a81474d",
+        "semanticJsonEqual": true,
+        "observed": {
+          "acceptsTotal": 3897507,
+          "acceptsMatchedToOffer": 3877422,
+          "selfAcceptEvents": 1102,
+          "distinctPayerPayeePairs": 415687,
+          "identitiesOnBothSides": 5588,
+          "statementReuseAcrossDids": 204,
+          "statementReuseMaxDids": 4,
+          "maxHubCounterparties": 16494
+        },
+        "captureCoverage": {
+          "totalLines": 6134989,
+          "signedLines": 5393024,
+          "seqFirst": 1,
+          "seqLast": 6273427,
+          "missingSeq": 138438,
+          "coveragePct": 97.8,
+          "firstObserved": "2026-09-02T07:12:14Z",
+          "lastObserved": "2026-09-18T12:00:00Z",
+          "interpretation": "Independent frozen snapshot reproduced end-to-end. Coverage is high but not complete; structural observations only."
+        },
+        "claimBoundary": {
+          "operatorAttribution": false,
+          "normativeResolution": false,
+          "fullRoomCoverage": false
+        }
+      }
     }
   },
   "scope": {

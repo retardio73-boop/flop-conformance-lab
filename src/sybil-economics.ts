@@ -116,6 +116,43 @@ type SybilFixture = {
       operatorAttribution?: boolean;
       fullRoomCoverage?: boolean;
     };
+    corroboration?: {
+      repository: string;
+      commit: string;
+      status: "REPRODUCED_SNAPSHOT_WITH_COVERAGE_CAVEAT";
+      reproduction: {
+        ciRun: string;
+        sourceScriptPath: string;
+        sourceScriptSha256: string;
+        importScriptPath: string;
+        importScriptSha256: string;
+        snapshotReleaseTag: string;
+        snapshotAsset: string;
+        snapshotGzipBytes: number;
+        snapshotGzipSha256: string;
+        snapshotDecompressedSha256: string;
+        expectedOutputPath: string;
+        expectedOutputSha256: string;
+        semanticJsonEqual: boolean;
+        observed: Record<string, number>;
+        captureCoverage: {
+          totalLines: number;
+          signedLines: number;
+          seqFirst: number;
+          seqLast: number;
+          missingSeq: number;
+          coveragePct: number;
+          firstObserved: string;
+          lastObserved: string;
+          interpretation: string;
+        };
+        claimBoundary: {
+          operatorAttribution: boolean;
+          normativeResolution: boolean;
+          fullRoomCoverage: boolean;
+        };
+      };
+    };
   };
   scope: Record<string, boolean>;
 };
@@ -250,6 +287,21 @@ export function validateSybilEconomicsFixture(): Record<string, unknown> {
     assert(fixture.empiricalLane.claimBoundary?.fullRoomCoverage === false, "EMPIRICAL_REPRO_FULL_ROOM_COVERAGE_FORBIDDEN");
     assert(fixture.empiricalLane.claimBoundary?.operatorAttribution === false, "EMPIRICAL_REPRO_OPERATOR_ATTRIBUTION_FORBIDDEN");
     assert(fixture.empiricalLane.claimBoundary?.normativeResolution === false, "EMPIRICAL_REPRO_MUST_NOT_RESOLVE_NORMATIVE_ISSUE");
+    const corroboration = fixture.empiricalLane.corroboration;
+    assert(corroboration?.repository === "lastbubble2035/tca", "EMPIRICAL_CORROBORATION_SOURCE_DIVERGENCE");
+    assert(corroboration?.commit === "fc9ea0ce41a2484a1cbbb8cc919e3b9fb6304700", "EMPIRICAL_CORROBORATION_COMMIT_DIVERGENCE");
+    assert(corroboration?.status === "REPRODUCED_SNAPSHOT_WITH_COVERAGE_CAVEAT", "EMPIRICAL_CORROBORATION_STATUS_DIVERGENCE");
+    assert(corroboration.reproduction.sourceScriptSha256 === "d3cb2a87a11047dd3813ff0dc64b64be1e12f92eb9c030d1012d5cdcbc0e9099", "EMPIRICAL_CORROBORATION_SCRIPT_HASH_DIVERGENCE");
+    assert(corroboration.reproduction.importScriptSha256 === "ab7fbb840b54e9530e569781293916247d01af3a5c0c203516af024db65736ba", "EMPIRICAL_CORROBORATION_IMPORT_HASH_DIVERGENCE");
+    assert(corroboration.reproduction.snapshotGzipBytes === 1129534154, "EMPIRICAL_CORROBORATION_ASSET_SIZE_DIVERGENCE");
+    assert(corroboration.reproduction.snapshotGzipSha256 === "df22adf7f5f7ff059737506788800a1090fe554e4c330b22aeab00bdbb2c3ffb", "EMPIRICAL_CORROBORATION_GZIP_HASH_DIVERGENCE");
+    assert(corroboration.reproduction.snapshotDecompressedSha256 === "5393e97658364c838f3447cfa83def782dbf66eaac0f4b3d4f724ab3dac0cc77", "EMPIRICAL_CORROBORATION_INPUT_HASH_DIVERGENCE");
+    assert(corroboration.reproduction.expectedOutputSha256 === "b5f7b0bd3b608ba65c2343522a3c0f28939595a7ab584703891474ce5a81474d", "EMPIRICAL_CORROBORATION_OUTPUT_HASH_DIVERGENCE");
+    assert(corroboration.reproduction.semanticJsonEqual === true, "EMPIRICAL_CORROBORATION_JSON_EQUAL_REQUIRED");
+    assert(corroboration.reproduction.captureCoverage.coveragePct === 97.8, "EMPIRICAL_CORROBORATION_COVERAGE_DIVERGENCE");
+    assert(corroboration.reproduction.claimBoundary.operatorAttribution === false, "EMPIRICAL_CORROBORATION_OPERATOR_ATTRIBUTION_FORBIDDEN");
+    assert(corroboration.reproduction.claimBoundary.fullRoomCoverage === false, "EMPIRICAL_CORROBORATION_FULL_ROOM_COVERAGE_FORBIDDEN");
+    assert(corroboration.reproduction.claimBoundary.normativeResolution === false, "EMPIRICAL_CORROBORATION_NORMATIVE_RESOLUTION_FORBIDDEN");
   }
 
   assert(!fixture.scope.sybilDetector, "FIXTURE_MUST_NOT_CLAIM_SYBIL_DETECTOR");
