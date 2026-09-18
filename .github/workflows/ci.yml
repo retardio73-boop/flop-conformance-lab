@@ -42,6 +42,20 @@ jobs:
           TCLK_UPSTREAM_ROOT: ${{ github.workspace }}/upstream-tclk
         run: node conformance/reproductions/tclk-96-upstream.mjs
 
+  upstream-yellowpaper-wire-corpus:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: flop-labs/yellowpaper
+          ref: cb3cbf97a346ff85aca6dba5e924434270ca672c
+          path: upstream-yellowpaper
+      - name: Check openagentsearch flop-wire-v1 report against pinned corpus
+        env:
+          YELLOWPAPER_UPSTREAM_ROOT: ${{ github.workspace }}/upstream-yellowpaper
+        run: python3 conformance/reproductions/flop-wire-v1-openagentsearch.py
+
   action-smoke:
     runs-on: ubuntu-latest
     steps:
