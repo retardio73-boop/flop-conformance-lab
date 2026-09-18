@@ -51,10 +51,35 @@ type SybilFixture = {
     criteria: CanaryCriterion[];
   };
   empiricalLane: {
-    status: "WAITING_FOR_PUBLIC_DATASET";
-    sourceClaim: string;
-    acceptanceRequirements: string[];
-    importedObservations: number;
+    status: "WAITING_FOR_PUBLIC_DATASET" | "PUBLIC_ANALYSIS_VERIFIED_INPUT_NOT_PUBLIC";
+    sourceClaim?: string;
+    acceptanceRequirements?: string[];
+    importedObservations?: number;
+    sourceRepository?: string;
+    sourceCommit?: string;
+    analysisFiles?: Record<string, string>;
+    verified?: {
+      scriptHashesMatchCommittedOutputs: boolean;
+      tclkScriptSha256: string;
+      sonnetScriptSha256: string;
+      outputFilesPublicAndImmutableAtPinnedCommit: boolean;
+    };
+    observedClaims?: {
+      classification: "STRUCTURAL_OBSERVATIONS_ONLY";
+      operatorAttribution: "NOT_CLAIMED";
+      [key: string]: unknown;
+    };
+    remainingBlocker?: {
+      status: "WAITING_FOR_IMMUTABLE_ARCHIVE_INPUT";
+      reason: string;
+      requiredForFullReproduction: string[];
+    };
+    claimBoundary?: {
+      regeneratedCountsFromOriginalInput: boolean;
+      scriptIntegrityVerified: boolean;
+      outputIntegrityPinned: boolean;
+      normativeResolution: boolean;
+    };
   };
   scope: Record<string, boolean>;
 };
@@ -155,8 +180,24 @@ export function validateSybilEconomicsFixture(): Record<string, unknown> {
   assert(fixture.promotionCanary.currentStatus === "OPEN_ISSUE", "ISSUE_58_CANARY_MUST_REMAIN_OPEN");
   assert(fixture.promotionCanary.targetStatus === "TARGET_SPEC", "ISSUE_58_CANARY_TARGET_DIVERGENCE");
 
-  assert(fixture.empiricalLane.status === "WAITING_FOR_PUBLIC_DATASET", "EMPIRICAL_LANE_MUST_WAIT_FOR_DATASET");
-  assert(fixture.empiricalLane.importedObservations === 0, "UNVERIFIED_EMPIRICAL_DATA_MUST_NOT_BE_IMPORTED");
+  assert(
+    fixture.empiricalLane.status === "WAITING_FOR_PUBLIC_DATASET" ||
+      fixture.empiricalLane.status === "PUBLIC_ANALYSIS_VERIFIED_INPUT_NOT_PUBLIC",
+    "EMPIRICAL_LANE_STATUS_DIVERGENCE",
+  );
+  if (fixture.empiricalLane.status === "WAITING_FOR_PUBLIC_DATASET") {
+    assert(fixture.empiricalLane.importedObservations === 0, "UNVERIFIED_EMPIRICAL_DATA_MUST_NOT_BE_IMPORTED");
+  } else {
+    assert(fixture.empiricalLane.sourceRepository === "lastbubble2035/tca", "EMPIRICAL_SOURCE_REPOSITORY_DIVERGENCE");
+    assert(fixture.empiricalLane.sourceCommit === "df23b6b5b5a1f5c9a3547dae86bbbe062c45b8a3", "EMPIRICAL_SOURCE_COMMIT_DIVERGENCE");
+    assert(fixture.empiricalLane.verified?.scriptHashesMatchCommittedOutputs === true, "EMPIRICAL_SCRIPT_HASH_VERIFICATION_REQUIRED");
+    assert(fixture.empiricalLane.verified?.outputFilesPublicAndImmutableAtPinnedCommit === true, "EMPIRICAL_OUTPUT_PIN_REQUIRED");
+    assert(fixture.empiricalLane.observedClaims?.classification === "STRUCTURAL_OBSERVATIONS_ONLY", "EMPIRICAL_CLAIM_BOUNDARY_DIVERGENCE");
+    assert(fixture.empiricalLane.observedClaims?.operatorAttribution === "NOT_CLAIMED", "EMPIRICAL_OPERATOR_ATTRIBUTION_FORBIDDEN");
+    assert(fixture.empiricalLane.remainingBlocker?.status === "WAITING_FOR_IMMUTABLE_ARCHIVE_INPUT", "EMPIRICAL_INPUT_BLOCKER_REQUIRED");
+    assert(fixture.empiricalLane.claimBoundary?.regeneratedCountsFromOriginalInput === false, "EMPIRICAL_COUNTS_MUST_NOT_BE_CLAIMED_REPRODUCED");
+    assert(fixture.empiricalLane.claimBoundary?.normativeResolution === false, "EMPIRICAL_LANE_MUST_NOT_RESOLVE_NORMATIVE_ISSUE");
+  }
 
   assert(!fixture.scope.sybilDetector, "FIXTURE_MUST_NOT_CLAIM_SYBIL_DETECTOR");
   assert(!fixture.scope.operatorAttribution, "FIXTURE_MUST_NOT_CLAIM_OPERATOR_ATTRIBUTION");
@@ -173,6 +214,6 @@ export function validateSybilEconomicsFixture(): Record<string, unknown> {
     promotionCriteriaSatisfied: fixture.promotionCanary.criteria.filter((item) => item.satisfied).length,
     promotionCriteriaTotal: fixture.promotionCanary.criteria.length,
     empiricalLane: fixture.empiricalLane.status,
-    importedObservations: fixture.empiricalLane.importedObservations,
+    importedObservations: fixture.empiricalLane.importedObservations ?? 0,
   };
 }

@@ -90,7 +90,7 @@ test("issue #58 canary remains OPEN until all normative criteria are satisfied",
   assert.equal(result.promotionStatus, "OPEN_ISSUE");
   assert.equal(result.promotionCriteriaSatisfied, 0);
   assert.equal(result.promotionCriteriaTotal, 6);
-  assert.equal(result.empiricalLane, "WAITING_FOR_PUBLIC_DATASET");
+  assert.equal(result.empiricalLane, "PUBLIC_ANALYSIS_VERIFIED_INPUT_NOT_PUBLIC");
   assert.equal(result.importedObservations, 0);
 });
 
