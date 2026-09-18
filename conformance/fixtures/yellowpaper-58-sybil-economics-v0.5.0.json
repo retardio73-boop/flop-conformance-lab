@@ -110,7 +110,7 @@
     ]
   },
   "empiricalLane": {
-    "status": "PUBLIC_ANALYSIS_VERIFIED_INPUT_NOT_PUBLIC",
+    "status": "REPRODUCED_SNAPSHOT_WITH_COVERAGE_CAVEAT",
     "sourceRepository": "lastbubble2035/tca",
     "sourceCommit": "df23b6b5b5a1f5c9a3547dae86bbbe062c45b8a3",
     "analysisFiles": {
@@ -154,20 +154,68 @@
       }
     },
     "remainingBlocker": {
-      "status": "WAITING_FOR_IMMUTABLE_ARCHIVE_INPUT",
-      "reason": "The pinned public commit contains scripts and outputs but no sqlite/archive snapshot or immutable input manifest sufficient to regenerate the counts from original captured messages.",
-      "requiredForFullReproduction": [
-        "public or retrievable immutable archive/snapshot used by the analysis",
-        "SHA-256 or equivalent immutable hash of that input",
-        "capture manifest covering room, sequence range, gaps and time window",
-        "same exact analysis invocation against that pinned input"
+      "status": "COVERAGE_AMBIGUITY_REMAINS",
+      "reason": "The published frozen snapshot is reproducible, but only 69.7% of the observed sequence range is represented and the cause of missing sequence numbers is unresolved.",
+      "requiredForFullRoomCoverageClaim": [
+        "determine whether missing sequence numbers are capture loss or unrelated room traffic sharing the counter",
+        "publish evidence sufficient to classify the missing sequence population"
       ]
     },
     "claimBoundary": {
-      "regeneratedCountsFromOriginalInput": false,
+      "regeneratedCountsFromOriginalInput": true,
       "scriptIntegrityVerified": true,
       "outputIntegrityPinned": true,
-      "normativeResolution": false
+      "normativeResolution": false,
+      "operatorAttribution": false,
+      "fullRoomCoverage": false
+    },
+    "reproduction": {
+      "sourceRepository": "justuncase1210-del/technocore-archive",
+      "scriptCommit": "afb58c1294f79d93e68027345b6e3cf3a05e4d7f",
+      "outputCommit": "b83bdff73886a281653592fe18b06ed453937876",
+      "scriptPath": "tclk_sybil_signals_v2.py",
+      "scriptSha256": "c66aa19206a62513520f5115571c996b1026487914bc0c845297009f77d46217",
+      "snapshotReleaseTag": "tclk-snapshot-2026-09-18",
+      "snapshotAsset": "tclk-offers-snapshot-20260918T055113Z.jsonl.gz",
+      "snapshotGzipBytes": 792709967,
+      "snapshotGzipSha256": "905a2faa6480cdf75b0331bfefdf4e013b5101509baa779ae995316daf39596d",
+      "snapshotDecompressedSha256": "d275f9e6bc44d752298d796646a72a1ea8037a7cd07f4b4fdb7ee6020cf3e705",
+      "expectedOutputPath": "analysis/tclk_sybil_signals_output_2026-09-18.json",
+      "expectedOutputSha256": "c54aac608aa8c9f6560247db6f464230530385cf6802f4ca712c144dd6c4912b",
+      "invocation": "python tclk_sybil_signals_v2.py tclk-offers.jsonl --max-mem-mb 2048 --out reproduced.json",
+      "reproducedOn": {
+        "platform": "Windows",
+        "python": "3.12.10",
+        "semanticJsonEqual": true,
+        "rawOutputSha256": "f969b416b10b3097bbba58016c34d8935c4c5c673d4c9090b50ed12d412bc0b0",
+        "lfNormalizedOutputSha256": "c54aac608aa8c9f6560247db6f464230530385cf6802f4ca712c144dd6c4912b",
+        "newlineNote": "Windows text mode emitted CRLF. Replacing CRLF with LF yields the exact published output hash; parsed JSON is exactly equal."
+      },
+      "observed": {
+        "totalRecords": 4295367,
+        "distinctSigners": 82762,
+        "offersParsed": 556780,
+        "acceptsParsed": 2702214,
+        "acceptsResolvedToOffer": 2530365,
+        "selfAccepts": 1093,
+        "reciprocalWashPairs": 23494,
+        "reciprocalPairAccepts": 111714,
+        "crossDidStatementReuse": 172
+      },
+      "captureCoverage": {
+        "seqFirst": 1177,
+        "seqLast": 6139597,
+        "seqRange": 6138421,
+        "distinctCapturedSeq": 4277681,
+        "missingSeq": 1860740,
+        "coveragePct": 69.7,
+        "interpretation": "Coverage caveat only. Missing seq values may be dropped capture frames or other room traffic sharing the counter; the reproduction does not resolve that ambiguity."
+      }
+    },
+    "corroboration": {
+      "repository": "lastbubble2035/tca",
+      "commit": "df23b6b5b5a1f5c9a3547dae86bbbe062c45b8a3",
+      "status": "PUBLIC_ANALYSIS_VERIFIED_INPUT_NOT_PUBLIC"
     }
   },
   "scope": {
