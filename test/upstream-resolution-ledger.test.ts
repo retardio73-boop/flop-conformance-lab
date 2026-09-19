@@ -16,8 +16,8 @@ test("#26 records the SessionOffer decision while comparison quote remains unres
   assert.equal(ledger.issues["26"].fixture, "flop-session-offer-boundary-v0.5.0.json");
 });
 
-test("#44 #56 and #57 remain open until upstream resolution is replayable", () => {
-  for (const issue of ["44", "56", "57"]) {
+test("#44 #56 #57 and #58 remain open until upstream resolution is replayable", () => {
+  for (const issue of ["44", "56", "57", "58"]) {
     assert.equal(ledger.issues[issue].upstreamDecision, null);
     assert.match(ledger.issues[issue].next, /WAIT_/);
   }

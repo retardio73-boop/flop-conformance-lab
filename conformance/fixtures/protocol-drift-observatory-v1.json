@@ -1,0 +1,19 @@
+{
+  "schema": "flop.protocol-drift-observatory.v1",
+  "generatedFrom": "public-upstream-evidence",
+  "policy": {
+    "issueClosureAlonePromotes": false,
+    "requirePinnedResolutionEvidence": true,
+    "requireFixtureReplayBeforePromotion": true
+  },
+  "canaries": [
+    {"id":"yellowpaper-56","upstream":"flop-labs/yellowpaper#56","state":"OPEN_ISSUE","fixture":"yellowpaper-56-57-v0.5.0.json","promotion":"TARGET_SPEC"},
+    {"id":"yellowpaper-57","upstream":"flop-labs/yellowpaper#57","state":"OPEN_ISSUE","fixture":"yellowpaper-56-57-v0.5.0.json","promotion":"TARGET_SPEC"},
+    {"id":"yellowpaper-58","upstream":"flop-labs/yellowpaper#58","state":"OPEN_ISSUE","fixture":"yellowpaper-58-sybil-economics-v0.5.0.json","promotion":"TARGET_SPEC"},
+    {"id":"technocore-851","upstream":"flop-labs/technocore-chat#851","state":"PROVISIONAL_PR","fixture":"technocore-pr851-canonicalization-populations.json","promotion":"RELEASE_CONFORMANCE"},
+    {"id":"tclk-147","upstream":"flop-labs/tclk#147","state":"FIELD_REPORT","fixture":"tclk-live-wire-adversarial-v1.json","promotion":"RELEASE_CONFORMANCE"},
+    {"id":"tclk-151","upstream":"flop-labs/tclk#151","state":"FIELD_REPORT","fixture":"tclk-live-wire-adversarial-v1.json","promotion":"RELEASE_CONFORMANCE"},
+    {"id":"tclk-158","upstream":"flop-labs/tclk#158","state":"FIELD_REPORT","fixture":"tclk-live-wire-adversarial-v1.json","promotion":"RELEASE_CONFORMANCE"},
+    {"id":"tclk-149","upstream":"flop-labs/tclk#149","state":"FIELD_REPORT","fixture":"tclk-live-wire-adversarial-v1.json","promotion":"RELEASE_CONFORMANCE"}
+  ]
+}
